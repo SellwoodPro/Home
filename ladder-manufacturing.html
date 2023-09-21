@@ -126,7 +126,7 @@
   <div id="output"></div>
   <button id="printButton" onclick="printOutput()" class="hidden">Print</button>
 
-  <script>
+ <script>
     var ladderType;
     var ladderHeight;
     var ladderLength;
@@ -196,8 +196,24 @@
         alert('Please start the ladder calculations first.');
         return;
       }
+
+      // Initialize the loop count variable
+      var loopCount = 0;
+
       displayOutput('Stringer: ' + Math.round(ladderLength - 8.5));
-      displayOutput('Treads: 442');
+            // Calculate tread spacing loop count
+      var x = 1;
+      while (true) {
+        var ladderLengthPerX = Math.round(ladderLength / x);
+        if ((ladderLengthPerX >= 212 && ladderLengthPerX <= 266) ||
+          (x < 4 && ladderLengthPerX >= 200 && ladderLengthPerX <= 300)) {
+          break;
+        }
+        x++;
+      }
+      loopCount = x;
+      // Display the loop count
+      displayOutput('Treads: ' + loopCount + ' @ 442');
       if (ladderHeight < 2000) {
         displayOutput('Handrails: Not required');
       } else if (ladderHeight >= 2000 && handrails === 'y') {
@@ -205,6 +221,9 @@
       } else if (ladderHeight >= 2000 && handrails === 'n') {
         displayOutput('Handrails (unobstructed): ' + Math.round(ladderLength - 957.75 + 1064.17));
       }
+
+      // Return the loop count
+      return loopCount;
     }
 
     // Function to calculate manufacturing details for pivotal ladder
