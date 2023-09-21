@@ -126,7 +126,7 @@
   <div id="output"></div>
   <button id="printButton" onclick="printOutput()" class="hidden">Print</button>
 
- <script>
+  <script>
     var ladderType;
     var ladderHeight;
     var ladderLength;
@@ -134,7 +134,6 @@
     var storedHeight;
     var handrails;
     var ladderTypeText;
-
     // Function to calculate ladder measurements and display output
     function calculate() {
       ladderHeight = document.getElementById("ladderHeightInput").value.trim();
@@ -166,12 +165,12 @@
       var outputDiv = document.getElementById("output");
       outputDiv.innerHTML = ''; // Clear the previous output
       displayOutput('Timestamp: ' + getCurrentTimestamp());
+      displayOutput('----------------------------------------');
       if (ladderType.toLowerCase() === 'f') {
         displayOutput('Ladder type: Fixed ladder');
       } else if (ladderType.toLowerCase() === 'p') {
         displayOutput('Ladder type: Pivotal ladder');
       }
-      displayOutput('----------------------------------------');
       displayOutput('Ladder height: ' + Math.round(ladderHeight));
       displayOutput('Ladder length: ' + Math.round(ladderLength));
       displayOutput('Landing space: ' + Math.round(landingSpace + 106));
@@ -189,19 +188,16 @@
       displayOutput('----------------------------------------');
       treadSpacing();
     }
-
     // Function to calculate manufacturing details for fixed ladder
     function manufacturing() {
       if (!ladderType || isNaN(ladderHeight) || isNaN(ladderLength)) {
         alert('Please start the ladder calculations first.');
         return;
       }
-
       // Initialize the loop count variable
       var loopCount = 0;
-
       displayOutput('Stringer: ' + Math.round(ladderLength - 8.5));
-            // Calculate tread spacing loop count
+      // Calculate tread spacing loop count
       var x = 1;
       while (true) {
         var ladderLengthPerX = Math.round(ladderLength / x);
@@ -221,11 +217,9 @@
       } else if (ladderHeight >= 2000 && handrails === 'n') {
         displayOutput('Handrails (unobstructed): ' + Math.round(ladderLength - 957.75 + 1064.17));
       }
-
       // Return the loop count
       return loopCount;
     }
-
     // Function to calculate manufacturing details for pivotal ladder
     function manufacturing_pivotal() {
       if (ladderHeight <= 1000) {
@@ -244,7 +238,6 @@
         displayOutput('Sliding bar: 480');
       }
     }
-
     // Function to calculate and display tread spacing
     function treadSpacing() {
       if (!ladderType || isNaN(ladderHeight) || isNaN(ladderLength)) {
@@ -269,7 +262,6 @@
       var outputDiv = document.getElementById("output");
       outputDiv.innerHTML += output.trim();
     }
-
     // Function to display output in the outputDiv element
     function displayOutput(text, tag) {
       var outputDiv = document.getElementById("output");
@@ -279,17 +271,14 @@
         outputDiv.innerHTML += text + '<br>';
       }
     }
-
     // Function to get the current timestamp using Moment.js library
     function getCurrentTimestamp() {
       return moment().format('DD/MM/YY h:mm a');
     }
-
     // Utility function to convert degrees to radians
     Math.radians = function(degrees) {
       return degrees * Math.PI / 180;
     };
-
     // Add event listener to the input fields to detect Enter key press
     document.getElementById("ladderHeightInput").addEventListener("keyup", function(event) {
       event.preventDefault();
@@ -297,7 +286,6 @@
         calculate();
       }
     });
-
     // Function to print the output
     function printOutput() {
       var ladderTypeText;
@@ -306,7 +294,6 @@
       } else if (ladderType.toLowerCase() === 'p') {
         ladderTypeText = 'Pivotal Ladder';
       }
-
       var outputDiv = document.getElementById("output");
       var printWindow = window.open('', '', 'width=600,height=400');
       printWindow.document.open();
