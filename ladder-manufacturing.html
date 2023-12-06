@@ -11,17 +11,18 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      line-height: 1.5;
+      /* Set your preferred line height here */
     }
 
     #output {
-      margin-top: 10px;
       padding: 10px;
       background-color: #fff;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 14px;
-      line-height: 1.4;
       text-align: center;
+      line-height: 1.5;
     }
 
     label {
@@ -29,9 +30,9 @@
     }
 
     input[type="text"] {
-      width: 80px;
-      padding: 4px 5px 4px 5px;
-      margin-bottom: -5px;
+      width: 100px;
+      padding: 2px 2px 2px 4px;
+      margin-top: 2px;
       margin-left: 5px;
       border: 2px solid #999;
       border-radius: 4px;
@@ -56,14 +57,12 @@
     .application input[type="radio"] {
       appearance: none;
       border-radius: 50%;
-      width: 16px;
-      height: 16px;
+      width: 15px;
+      height: 15px;
       border: 2px solid #999;
       transition: 0.2s all linear;
-      margin-right: 5px;
       position: relative;
-      top: 8px;
-      margin-bottom: 5px;
+      top: 2px;
     }
 
     .application input[type="radio"]:checked {
@@ -88,6 +87,7 @@
       font-weight: bold;
       font-size: 18px;
       margin-top: 10px;
+      margin-bottom: 10px;
     }
 
     button:hover {
@@ -99,9 +99,14 @@
       background-color: #3e8e41;
     }
   </style>
+
 </head>
 
 <body>
+  <div>
+    <label for="customerInput">Job Name:</label>
+    <input type="text" id="customerInput" placeholder="Enter Name">
+  </div>
   <div>
     <label for="ladderHeightInput">Ladder height (mm):</label>
     <input type="text" id="ladderHeightInput" placeholder="Enter Height">
@@ -136,8 +141,14 @@
     var ladderTypeText;
     // Function to calculate ladder measurements and display output
     function calculate() {
+      var customer = document.getElementById("customerInput").value.trim();
       ladderHeight = document.getElementById("ladderHeightInput").value.trim();
       var printButton = document.getElementById("printButton");
+      if (customer === '') {
+        alert('Please enter customer name.');
+        printButton.classList.add("hidden"); // Hide the print button
+        return;
+      }
       if (ladderHeight === '') {
         alert('Please enter ladder height.');
         printButton.classList.add("hidden"); // Hide the print button
@@ -165,6 +176,7 @@
       var outputDiv = document.getElementById("output");
       outputDiv.innerHTML = ''; // Clear the previous output
       displayOutput('Timestamp: ' + getCurrentTimestamp());
+      displayOutput('Job Name: ' + customer); // Display customer name
       displayOutput('----------------------------------------');
       if (ladderType.toLowerCase() === 'f') {
         displayOutput('Ladder type: Fixed ladder');
@@ -294,11 +306,13 @@
       } else if (ladderType.toLowerCase() === 'p') {
         ladderTypeText = 'Pivotal Ladder';
       }
+      var customer = document.getElementById("customerInput").value.trim(); // Get customer name
       var outputDiv = document.getElementById("output");
       var printWindow = window.open('', '', 'width=600,height=400');
       printWindow.document.open();
       printWindow.document.write('<html><head><title>Print</title></head><body>');
-      printWindow.document.write('<h1>' + ladderTypeText + ' Manufacturing</h1>');
+      printWindow.document.write('<h1>' + ladderTypeText + '</h1>');
+      printWindow.document.write('<h2>Job Name: ' + customer + '</h2>');
       printWindow.document.write(outputDiv.innerHTML);
       printWindow.document.write('</body></html>');
       printWindow.document.close();
