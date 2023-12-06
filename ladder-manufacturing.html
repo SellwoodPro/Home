@@ -41,6 +41,30 @@
       font-weight: bold;
     }
 
+    #customerInput {
+      width: 130px;
+      padding: 2px 2px 2px 4px;
+      margin-top: 2px;
+      margin-left: 5px;
+      border: 2px solid #999;
+      border-radius: 4px;
+      outline: none;
+      color: #ED1C24;
+      font-weight: bold;
+    }
+
+    #ladderHeightInput {
+      width: 60px;
+      padding: 2px 2px 2px 4px;
+      margin-top: 2px;
+      margin-left: 5px;
+      border: 2px solid #999;
+      border-radius: 4px;
+      outline: none;
+      color: #ED1C24;
+      font-weight: bold;
+    }
+
     input[type="text"]::placeholder {
       color: black;
       font-weight: normal;
@@ -104,15 +128,15 @@
 
 <body>
   <div>
-    <label for="customerInput">Job Name:</label>
-    <input type="text" id="customerInput" placeholder="Enter Name">
+    <label for="customerInput">Job name:</label>
+    <input type="text" id="customerInput" placeholder="">
   </div>
   <div>
     <label for="ladderHeightInput">Ladder height (mm):</label>
-    <input type="text" id="ladderHeightInput" placeholder="Enter Height">
+    <input type="text" id="ladderHeightInput" placeholder="">
   </div>
   <div class="application">
-    <label>Ladder Type:</label>
+    <label>Ladder type:</label>
     <input type="radio" id="ladderTypeFixed" name="ladderType" value="f" checked>
     <label for="ladderTypeFixed">Fixed</label>
     <input type="radio" id="ladderTypePivotal" name="ladderType" value="p">
@@ -176,7 +200,7 @@
       var outputDiv = document.getElementById("output");
       outputDiv.innerHTML = ''; // Clear the previous output
       displayOutput('Timestamp: ' + getCurrentTimestamp());
-      displayOutput('Job Name: ' + customer); // Display customer name
+      displayOutput('Job name: ' + customer); // Display customer name
       displayOutput('----------------------------------------');
       if (ladderType.toLowerCase() === 'f') {
         displayOutput('Ladder type: Fixed ladder');
@@ -312,7 +336,7 @@
       printWindow.document.open();
       printWindow.document.write('<html><head><title>Print</title></head><body>');
       printWindow.document.write('<h1>' + ladderTypeText + '</h1>');
-      printWindow.document.write('<h2>Job Name: ' + customer + '</h2>');
+      printWindow.document.write('<h2>Job name: ' + customer + '</h2>');
       printWindow.document.write(outputDiv.innerHTML);
       printWindow.document.write('</body></html>');
       printWindow.document.close();
