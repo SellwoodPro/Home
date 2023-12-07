@@ -12,7 +12,6 @@
       flex-direction: column;
       align-items: center;
       line-height: 1.5;
-      /* Set your preferred line height here */
     }
 
     #output {
@@ -36,7 +35,6 @@
       margin-left: 5px;
       border: 2px solid #999;
       border-radius: 4px;
-      outline: none;
       color: #ED1C24;
       font-weight: bold;
     }
@@ -48,7 +46,6 @@
       margin-left: 5px;
       border: 2px solid #999;
       border-radius: 4px;
-      outline: none;
       color: #ED1C24;
       font-weight: bold;
     }
@@ -60,18 +57,21 @@
       margin-left: 5px;
       border: 2px solid #999;
       border-radius: 4px;
-      outline: none;
       color: #ED1C24;
       font-weight: bold;
     }
 
     input[type="text"]::placeholder {
-      color: black;
+      color: #ED1C24;
+      /* Update the placeholder color to match the focus color */
       font-weight: normal;
     }
 
-    input[type="text"]:focus {
+    #customerInput:focus,
+    #ladderHeightInput:focus {
       border-color: #ED1C24;
+      outline: none;
+      /* This removes the default focus outline */
     }
 
     .hidden {
@@ -336,7 +336,7 @@
       printWindow.document.open();
       printWindow.document.write('<html><head><title>Print</title></head><body>');
       printWindow.document.write('<h1>' + ladderTypeText + '</h1>');
-      printWindow.document.write('<h2>Job name: ' + customer + '</h2>');
+      printWindow.document.write('<h2>Job: ' + customer + '</h2>');
       printWindow.document.write(outputDiv.innerHTML);
       printWindow.document.write('</body></html>');
       printWindow.document.close();
