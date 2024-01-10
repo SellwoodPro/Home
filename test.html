@@ -3,82 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Label Printer Example</title>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.314/build/pdf.js"></script>
+    <title>Printable Form</title>
+    <style>
+        body {
+            width: 9.4cm;
+            height: 10.8cm;
+            margin: 0 auto;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            margin-top: 2cm;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5cm;
+        }
+
+        input {
+            width: 80%;
+            padding: 0.3cm;
+            margin-bottom: 0.8cm;
+            text-align: center;
+        }
+
+        button {
+            padding: 0.5cm;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+    <form id="printForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
 
-    <h1>Label Printer Form</h1>
+        <label for="street">Street:</label>
+        <input type="text" id="street" name="street" required>
 
-    <label for="name">Name:</label>
-    <input type="text" id="name">
+        <label for="suburb">Suburb:</label>
+        <input type="text" id="suburb" name="suburb" required>
 
-    <label for="contactNumber">Contact Number:</label>
-    <input type="text" id="contactNumber">
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required>
 
-    <label for="street">Street:</label>
-    <input type="text" id="street">
+        <label for="contact">Contact Number:</label>
+        <input type="text" id="contact" name="contact" required>
 
-    <label for="suburb">Suburb:</label>
-    <input type="text" id="suburb">
+        <!-- New input field for notes -->
+        <label for="notes">Notes:</label>
+        <input type="text" id="notes" name="notes">
 
-    <label for="city">City:</label>
-    <input type="text" id="city">
-
-    <button onclick="generatePDF()">Generate PDF</button>
-
-    <div id="output"></div>
+        <button type="button" onclick="printContent()">Print</button>
+    </form>
 
     <script>
-        async function generatePDF() {
-            var name = document.getElementById('name').value;
-            var contactNumber = document.getElementById('contactNumber').value;
-            var street = document.getElementById('street').value;
-            var suburb = document.getElementById('suburb').value;
-            var city = document.getElementById('city').value;
+        function printContent() {
+            var nameContent = document.getElementById("name").value;
+            var streetContent = document.getElementById("street").value;
+            var suburbContent = document.getElementById("suburb").value;
+            var cityContent = document.getElementById("city").value;
+            var contactContent = document.getElementById("contact").value;
+            var notesContent = document.getElementById("notes").value; // New line for notes
 
-            var output = `Name: ${name}\n`;
-            output += `Contact Number: ${contactNumber}\n`;
-            output += `Street: ${street}\n`;
-            output += `Suburb: ${suburb}\n`;
-            output += `City: ${city}\n`;
+            var printWindow = window.open('', '_blank');
+            printWindow.document.write('<html><head><title>Printable Content</title><style>');
+            printWindow.document.write('body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: "Your Sans-serif Font", sans-serif; }');
+            printWindow.document.write('.content-container { text-align: center; font-size: 1.2em; }');
+            printWindow.document.write('</style></head><body>');
+            printWindow.document.write('<div class="content-container">');
+            printWindow.document.write('<p>' + nameContent + '</p>');
+            printWindow.document.write('<p>' + streetContent + '<br>' + suburbContent + '<br>' + cityContent + '</p>');
+            printWindow.document.write('<p>' + contactContent + '</p>');
+            printWindow.document.write('<p>' + notesContent + '</p>'); // New line for notes
+            printWindow.document.write('</div>');
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
 
-            document.getElementById('output').innerHTML = output;
-
-            // Create a new PDF document after the jsPDF library is loaded
-            var pdf = new jsPDF();
-
-            // Set the text in the PDF
-            pdf.text(output, 10, 10);
-
-            // Convert PDF to data URL
-            var pdfDataUrl = pdf.output('datauristring');
-
-            // Create an iframe to open the PDF in a new tab
-            var iframe = document.createElement('iframe');
-            iframe.style.width = '100%';
-            iframe.style.height = '500px';
-            document.body.appendChild(iframe);
-
-            // Use pdf.js to display the PDF in the iframe
-            var pdfjsLib = window['pdfjs-dist/build/pdf'];
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.314/build/pdf.worker.min.js';
-
-            var loadingTask = pdfjsLib.getDocument({ data: atob(pdfDataUrl.split(',')[1]) });
-            var pdfDocument = await loadingTask.promise;
-            var pdfPage = await pdfDocument.getPage(1);
-
-            // Render the PDF page in the iframe
-            var canvas = document.createElement('canvas');
-            var context = canvas.getContext('2d');
-            var viewport = pdfPage.getViewport({ scale: 1 });
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            iframe.contentDocument.body.appendChild(canvas);
-            pdfPage.render({ canvasContext: context, viewport: viewport });
+            printWindow.print();
         }
     </script>
-
 </body>
 </html>
