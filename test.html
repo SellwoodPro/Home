@@ -22,7 +22,7 @@
             margin-bottom: 0.5cm;
         }
 
-        input {
+        input, textarea {
             width: 80%;
             padding: 0.3cm;
             margin-bottom: 0.8cm;
@@ -41,21 +41,11 @@
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
 
-        <label for="street">Street:</label>
-        <input type="text" id="street" name="street" required>
-
-        <label for="suburb">Suburb:</label>
-        <input type="text" id="suburb" name="suburb" required>
-
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" required>
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" rows="5" required></textarea>
 
         <label for="contact">Contact Number:</label>
         <input type="text" id="contact" name="contact" required>
-
-        <!-- New input field for notes -->
-        <label for="notes">Notes:</label>
-        <input type="text" id="notes" name="notes">
 
         <button type="button" onclick="printContent()">Print</button>
     </form>
@@ -63,11 +53,8 @@
     <script>
         function printContent() {
             var nameContent = document.getElementById("name").value;
-            var streetContent = document.getElementById("street").value;
-            var suburbContent = document.getElementById("suburb").value;
-            var cityContent = document.getElementById("city").value;
+            var addressContent = document.getElementById("address").value;
             var contactContent = document.getElementById("contact").value;
-            var notesContent = document.getElementById("notes").value; // New line for notes
 
             var printWindow = window.open('', '_blank');
             printWindow.document.write('<html><head><title>Printable Content</title><style>');
@@ -76,9 +63,8 @@
             printWindow.document.write('</style></head><body>');
             printWindow.document.write('<div class="content-container">');
             printWindow.document.write('<p>' + nameContent + '</p>');
-            printWindow.document.write('<p>' + streetContent + '<br>' + suburbContent + '<br>' + cityContent + '</p>');
+            printWindow.document.write('<div>' + addressContent.replace(/\n/g, '<br>') + '</div>');
             printWindow.document.write('<p>' + contactContent + '</p>');
-            printWindow.document.write('<p>' + notesContent + '</p>'); // New line for notes
             printWindow.document.write('</div>');
             printWindow.document.write('</body></html>');
             printWindow.document.close();
