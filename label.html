@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,26 +23,30 @@
             margin-bottom: 0.5cm;
         }
 
-        input, textarea {
+        input,
+        textarea {
             width: 80%;
             padding: 0.3cm;
             margin-bottom: 0.8cm;
             text-align: center;
             font-family: Arial, sans-serif;
-            font-size: 16px; /* Adjust the font size as needed */
+            font-size: 16px;
         }
 
         textarea {
-            resize: vertical; /* Allow vertical resizing for textarea */
+            resize: vertical;
         }
 
         button {
             padding: 0.5cm;
             font-size: 1em;
             cursor: pointer;
+            margin-right: 0.5cm;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.5/html2pdf.bundle.js"></script>
 </head>
+
 <body>
     <form id="printForm">
         <label for="name">Name:</label>
@@ -54,6 +59,7 @@
         <input type="text" id="contact" name="contact" required>
 
         <button type="button" onclick="printContent()">Print</button>
+        <button type="button" onclick="saveAsPDF()">Save as PDF</button>
     </form>
 
     <script>
@@ -77,6 +83,15 @@
 
             printWindow.print();
         }
+
+        function saveAsPDF() {
+            var element = document.getElementById("printForm");
+
+            html2pdf(element).then(function (pdf) {
+                pdf.save('form_data.pdf');
+            });
+        }
     </script>
 </body>
+
 </html>
