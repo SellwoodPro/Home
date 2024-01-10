@@ -27,6 +27,12 @@
             padding: 0.3cm;
             margin-bottom: 0.8cm;
             text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 16px; /* Adjust the font size as needed */
+        }
+
+        textarea {
+            resize: vertical; /* Allow vertical resizing for textarea */
         }
 
         button {
@@ -59,11 +65,11 @@
             var printWindow = window.open('', '_blank');
             printWindow.document.write('<html><head><title>Printable Content</title><style>');
             printWindow.document.write('body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: "Your Sans-serif Font", sans-serif; }');
-            printWindow.document.write('.content-container { text-align: center; font-size: 1.2em; }');
+            printWindow.document.write('.content-container { text-align: center; font-size: 24px; }');
             printWindow.document.write('</style></head><body>');
             printWindow.document.write('<div class="content-container">');
-            printWindow.document.write('<p>' + nameContent + '</p>');
-            printWindow.document.write('<div>' + addressContent.replace(/\n/g, '<br>') + '</div>');
+            printWindow.document.write('<p><strong>' + nameContent + '</strong></p>');
+            printWindow.document.write('<div><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
             printWindow.document.write('<p>' + contactContent + '</p>');
             printWindow.document.write('</div>');
             printWindow.document.write('</body></html>');
