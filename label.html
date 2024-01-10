@@ -31,10 +31,12 @@
             text-align: center;
             font-family: Arial, sans-serif;
             font-size: 16px;
+            /* Adjust the font size as needed */
         }
 
         textarea {
             resize: vertical;
+            /* Allow vertical resizing for textarea */
         }
 
         button {
@@ -44,7 +46,6 @@
             margin-right: 0.5cm;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.5/html2pdf.bundle.js"></script>
 </head>
 
 <body>
@@ -59,9 +60,10 @@
         <input type="text" id="contact" name="contact" required>
 
         <button type="button" onclick="printContent()">Print</button>
-        <button type="button" onclick="saveAsPDF()">Save as PDF</button>
+        <button type="button" onclick="saveAsPDF()">PDF</button>
     </form>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
         function printContent() {
             var nameContent = document.getElementById("name").value;
@@ -85,11 +87,16 @@
         }
 
         function saveAsPDF() {
-            var element = document.getElementById("printForm");
+            var nameContent = document.getElementById("name").value;
+            var addressContent = document.getElementById("address").value;
+            var contactContent = document.getElementById("contact").value;
 
-            html2pdf(element).then(function (pdf) {
-                pdf.save('form_data.pdf');
-            });
+            var pdf = new jsPDF();
+            pdf.text(`Name: ${nameContent}`, 20, 20);
+            pdf.text(`Address: ${addressContent}`, 20, 30);
+            pdf.text(`Contact Number: ${contactContent}`, 20, 40);
+
+            pdf.save('form_data.pdf');
         }
     </script>
 </body>
