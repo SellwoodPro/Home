@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,31 +22,26 @@
             margin-bottom: 0.5cm;
         }
 
-        input,
-        textarea {
+        input, textarea {
             width: 80%;
             padding: 0.3cm;
             margin-bottom: 0.8cm;
             text-align: center;
             font-family: Arial, sans-serif;
-            font-size: 16px;
-            /* Adjust the font size as needed */
+            font-size: 16px; /* Adjust the font size as needed */
         }
 
         textarea {
-            resize: vertical;
-            /* Allow vertical resizing for textarea */
+            resize: vertical; /* Allow vertical resizing for textarea */
         }
 
         button {
             padding: 0.5cm;
             font-size: 1em;
             cursor: pointer;
-            margin-right: 0.5cm;
         }
     </style>
 </head>
-
 <body>
     <form id="printForm">
         <label for="name">Name:</label>
@@ -60,10 +54,8 @@
         <input type="text" id="contact" name="contact" required>
 
         <button type="button" onclick="printContent()">Print</button>
-        <button type="button" onclick="saveAsPDF()">PDF</button>
     </form>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
         function printContent() {
             var nameContent = document.getElementById("name").value;
@@ -85,20 +77,6 @@
 
             printWindow.print();
         }
-
-        function saveAsPDF() {
-            var nameContent = document.getElementById("name").value;
-            var addressContent = document.getElementById("address").value;
-            var contactContent = document.getElementById("contact").value;
-
-            var pdf = new jsPDF();
-            pdf.text(`Name: ${nameContent}`, 20, 20);
-            pdf.text(`Address: ${addressContent}`, 20, 30);
-            pdf.text(`Contact Number: ${contactContent}`, 20, 40);
-
-            pdf.save('form_data.pdf');
-        }
     </script>
 </body>
-
 </html>
