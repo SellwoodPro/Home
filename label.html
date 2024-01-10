@@ -24,8 +24,9 @@
 
         input, textarea {
             width: 80%;
-            padding: 0.3cm;
-            margin-bottom: 0.8cm;
+            padding: 5px;
+            margin-bottom: 10px;
+            margin-top: -8px;
             text-align: center;
             font-family: Arial, sans-serif;
             font-size: 16px; /* Adjust the font size as needed */
@@ -36,22 +37,44 @@
         }
 
         button {
-            padding: 0.5cm;
-            font-size: 1em;
-            cursor: pointer;
+            width: 100px;
+            padding: 10px 20px;
+            background-color: #ED1C24;
+            border: 1px solid #ED1C24;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition-duration: 0.5s;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #fff;
+            color: #ED1C24;
+        }
+
+        button:active {
+            background-color: #3e8e41;
         }
     </style>
 </head>
 <body>
     <form id="printForm">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name">
 
         <label for="address">Address:</label>
-        <textarea id="address" name="address" rows="5" required></textarea>
+        <textarea id="address" name="address" rows="4"></textarea>
 
         <label for="contact">Contact Number:</label>
-        <input type="text" id="contact" name="contact" required>
+        <input type="text" id="contact" name="contact">
+
+        <label for="notes">Notes:</label>
+        <input type="text" id="notes" name="notes">
 
         <button type="button" onclick="printContent()">Print</button>
     </form>
@@ -61,16 +84,19 @@
             var nameContent = document.getElementById("name").value;
             var addressContent = document.getElementById("address").value;
             var contactContent = document.getElementById("contact").value;
+            var notesContent = document.getElementById("notes").value;
 
             var printWindow = window.open('', '_blank');
             printWindow.document.write('<html><head><title>Printable Content</title><style>');
             printWindow.document.write('body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: "Your Sans-serif Font", sans-serif; }');
             printWindow.document.write('.content-container { text-align: center; font-size: 24px; }');
+            printWindow.document.write('.notes { font-size: 12pt; }'); // Adjusted font size for notes
             printWindow.document.write('</style></head><body>');
             printWindow.document.write('<div class="content-container">');
             printWindow.document.write('<p><strong>' + nameContent + '</strong></p>');
             printWindow.document.write('<div><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
             printWindow.document.write('<p>' + contactContent + '</p>');
+            printWindow.document.write('<p class="notes"><em>' + notesContent + '</em></p>');
             printWindow.document.write('</div>');
             printWindow.document.write('</body></html>');
             printWindow.document.close();
