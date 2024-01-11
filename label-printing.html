@@ -88,19 +88,19 @@
 
         var printWindow = window.open('', '_blank');
         printWindow.document.write('<html><head><title>Printable Content</title><style>');
-        printWindow.document.write('body { font-family: "Arial Narrow", "Arial", sans-serif; }');
-        printWindow.document.write('@media print { body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: "Arial Narrow", "Arial", sans-serif; } }');
-        printWindow.document.write('.content-container { text-align: center; font-size: 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; }');
-        printWindow.document.write('.content-container p:first-child { margin-top: 0; }'); // Remove margin above the first paragraph
-        printWindow.document.write('.content-container p:last-child { margin-bottom: 0; }'); // Remove margin below the last paragraph
-        printWindow.document.write('.content-container p { margin: 15px 0; }'); // Adjusted margin for paragraphs
-        printWindow.document.write('.notes { font-size: 12pt; margin: 5px 0; }'); // Adjusted font size for notes and reduced margin
+        printWindow.document.write('body { font-family: "Arial Narrow", "Arial", sans-serif; margin: 0; padding: 0; }');
+        printWindow.document.write('@media print { body { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: "Arial Narrow", "Arial", sans-serif; } }');
+        printWindow.document.write('.content-container { text-align: center; font-size: 28px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }');
+        printWindow.document.write('.content-container p { margin: 0; }'); // Remove margin for paragraphs
+        printWindow.document.write('.content-container .category { margin: 10px 0; }'); // Adjusted margin for categories
+        printWindow.document.write('.notes { font-size: 12pt; }');
+        printWindow.document.write('.contact { font-size: 20px; }');
         printWindow.document.write('</style></head><body>');
         printWindow.document.write('<div class="content-container">');
-        printWindow.document.write('<p><strong>' + nameContent + '</strong></p>');
-        printWindow.document.write('<div><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
-        printWindow.document.write('<p>' + contactContent + '</p>');
-        printWindow.document.write('<p class="notes"><em>' + notesContent + '</em></p>');
+        printWindow.document.write('<p class="category"><strong>' + nameContent + '</strong></p>');
+        printWindow.document.write('<div class="category"><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
+        printWindow.document.write('<p class="category contact">' + contactContent + '</p>');
+        printWindow.document.write('<p class="category notes"><em>' + notesContent + '</em></p>');
         printWindow.document.write('</div>');
         printWindow.document.write('</body></html>');
         printWindow.document.close();
@@ -109,7 +109,6 @@
     }
 
     function capitalizeFirstLetterAfterPeriod(str) {
-        // Capitalize the first letter after a full stop (period)
         return str.replace(/\. ([a-z])/g, function(match, group1) {
             return '. ' + group1.toUpperCase();
         }).replace(/^[a-z]/, function(match) {
@@ -117,6 +116,9 @@
         });
     }
 </script>
+
+
+
 
 
 
