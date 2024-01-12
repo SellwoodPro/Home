@@ -83,7 +83,7 @@
     function printContent() {
         var nameContent = document.getElementById("name").value.toUpperCase();
         var addressContent = document.getElementById("address").value.toUpperCase();
-        var contactContent = document.getElementById("contact").value.toUpperCase();
+        var contactContent = formatPhoneNumber(document.getElementById("contact").value.toUpperCase().replace(/\s/g, ''));
         var notesContent = capitalizeFirstLetterAfterPeriod(document.getElementById("notes").value.toLowerCase());
 
         var printWindow = window.open('', '_blank');
@@ -112,15 +112,35 @@
         return str.replace(/\. ([a-z])/g, function(match, group1) {
             return '. ' + group1.toUpperCase();
         }).replace(/^[a-z]/, function(match) {
+
             return match.toUpperCase();
         });
     }
+
+function formatPhoneNumber(phoneNumber) {
+    // Check if the number looks like a mobile number
+    var mobilePattern = /^(021|022|027|029)(\d{3})(\d{4}|\d{3})$/;
+
+    // Check if the number looks like a landline number
+    var landlinePattern = /^(0[3-9])?[ -]?(\d{3})[ -]?(\d{4})$/;
+
+    // Check if the number looks like an 0800 number
+    var tollFreePattern = /^(0800)[ -]?(\d{3})[ -]?(\d{4})$/;
+
+    if (mobilePattern.test(phoneNumber)) {
+        // Format as a mobile number
+        return phoneNumber.replace(/^(021|022|027|029)(\d{3})(\d{4}|\d{3})$/, '$1 $2 $3');
+    } else if (landlinePattern.test(phoneNumber)) {
+        // Format as a landline number
+        return phoneNumber.replace(/^(0[3-9])?[ -]?(\d{3})[ -]?(\d{4})$/, '$1 $2 $3');
+    } else if (tollFreePattern.test(phoneNumber)) {
+        // Format as an 0800 number
+        return phoneNumber.replace(/^(0800)[ -]?(\d{3})[ -]?(\d{4})$/, '$1 $2 $3');
+    } else {
+        // Unable to determine the type, return as is
+        return phoneNumber;
+    }
+}
 </script>
-
-
-
-
-
-
 </body>
 </html>
