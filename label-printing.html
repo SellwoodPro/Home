@@ -118,24 +118,27 @@
     }
 
 function formatPhoneNumber(phoneNumber) {
+    // Replace leading '+64' with '0'
+    phoneNumber = phoneNumber.replace(/^\+64/, '0');
+
     // Check if the number looks like a mobile number
-    var mobilePattern = /^(021|022|027|029)(\d{3})(\d{4}|\d{3})$/;
+    var mobilePattern = /^(021|022|027|029)(\d{3}|\d{4})(\d{4}|\d{3})$/;
 
     // Check if the number looks like a landline number
-    var landlinePattern = /^(0[3-9])?[ -]?(\d{3})[ -]?(\d{4})$/;
+    var landlinePattern = /^(?!08)(0[3-9])(\d{3}|\d{4})(\d{4}|\d{3})$/;
 
-    // Check if the number looks like an 0800 number
-    var tollFreePattern = /^(0800)[ -]?(\d{3})[ -]?(\d{4})$/;
+    // Check if the number looks like an 0800 number with 4 or 6 digits after 0800
+    var tollFreePattern = /^(0800)(\d{3}|\d{4})(\d{4}|\d{3})$/;
 
     if (mobilePattern.test(phoneNumber)) {
         // Format as a mobile number
-        return phoneNumber.replace(/^(021|022|027|029)(\d{3})(\d{4}|\d{3})$/, '$1 $2 $3');
+        return phoneNumber.replace(/^(021|022|027|029)(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
     } else if (landlinePattern.test(phoneNumber)) {
         // Format as a landline number
-        return phoneNumber.replace(/^(0[3-9])?[ -]?(\d{3})[ -]?(\d{4})$/, '$1 $2 $3');
+        return phoneNumber.replace(/^(?!08)(0[3-9])(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
     } else if (tollFreePattern.test(phoneNumber)) {
         // Format as an 0800 number
-        return phoneNumber.replace(/^(0800)[ -]?(\d{3})[ -]?(\d{4})$/, '$1 $2 $3');
+        return phoneNumber.replace(/^(0800)(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
     } else {
         // Unable to determine the type, return as is
         return phoneNumber;
