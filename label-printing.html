@@ -83,7 +83,7 @@
     function printContent() {
         var nameContent = document.getElementById("name").value.toUpperCase();
         var addressContent = document.getElementById("address").value.toUpperCase();
-        var contactContent = formatPhoneNumber(document.getElementById("contact").value.toUpperCase().replace(/\s/g, ''));
+        var contactContent = formatPhoneNumber(document.getElementById("contact").value.toUpperCase().replace(/[ -]/g, ''));
         var notesContent = capitalizeFirstLetterAfterPeriod(document.getElementById("notes").value.toLowerCase());
 
         var printWindow = window.open('', '_blank');
