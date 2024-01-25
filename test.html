@@ -18,7 +18,7 @@
             margin-top: 0;
         }
 
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 4px;
             margin-bottom: 4px;
@@ -26,6 +26,9 @@
             text-align: center;
             font-family: 'Arial Narrow', Arial, sans-serif;
             font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
 
         textarea {
@@ -98,8 +101,7 @@
 </head>
 <body>
     <form id="printForm">
-        <!-- Dropdown list for names -->
-        <label for="nameDropdown">Select Name:</label>
+   <!-- Dropdown list for names -->
         <select id="nameDropdown" onchange="populateForm()">
             <option value="">Select a name</option>
         </select>
