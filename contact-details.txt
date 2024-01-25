@@ -1,4 +1,3 @@
-[Select] [] [] []
 [Sellwood Products] [3/75 Apollo Drive, Rosedale, Auckland] [094770820] [1 of 1]
 [ITM Albany] [66 Bush Road, Albany, Auckland] [094156889] [1 of 1]
 [Carters Albany] [10 Tawa Drive, Albany, Auckland] [094157171] [1 of 1]
