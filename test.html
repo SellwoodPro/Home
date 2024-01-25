@@ -101,8 +101,8 @@
 </head>
 <body>
     <form id="printForm">
-   <!-- Dropdown list for names -->
-        <select id="nameDropdown" onchange="populateForm()">
+        <!-- Modified Dropdown list for names -->
+        <select id="nameDropdown" oninput="filterDropdown()">
             <option value="">Select</option>
         </select>
 
@@ -122,45 +122,44 @@
     </form>
 
     <script>
-function populateDropdown(file) {
-    $.get(file, function (data) {
-        var entries = data.match(/\[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\]/g);
-        var dropdown = document.getElementById("nameDropdown");
+        function populateDropdown(file) {
+            $.get(file, function (data) {
+                var entries = data.match(/\[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\]/g);
+                var dropdown = document.getElementById("nameDropdown");
 
-        // Clear existing options
-        dropdown.innerHTML = '';
+                // Clear existing options
+                dropdown.innerHTML = '';
 
-        // Add the default "Select" option
-        var selectOption = document.createElement("option");
-        selectOption.value = "";
-        selectOption.text = "Select";
-        dropdown.add(selectOption);
+                // Add the default "Select" option
+                var selectOption = document.createElement("option");
+                selectOption.value = "";
+                selectOption.text = "Select";
+                dropdown.add(selectOption);
 
-        // Get the selected name (if any)
-        var selectedName = document.getElementById("nameDropdown").value;
-
-        // If a name is selected, add it to the dropdown
-        if (selectedName) {
-            var option = document.createElement("option");
-            option.value = selectedName;
-            option.text = selectedName;
-            dropdown.add(option);
+                // Populate dropdown with all names
+                entries.forEach(function (entry) {
+                    var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
+                    var option = document.createElement("option");
+                    option.value = name;
+                    option.text = name;
+                    dropdown.add(option);
+                });
+            });
         }
 
-        // Populate dropdown with only the name from each entry
-        entries.forEach(function (entry) {
-            var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
+        function filterDropdown() {
+            var input = document.getElementById("nameDropdown").value.toLowerCase();
+            var options = document.getElementById("nameDropdown").getElementsByTagName("option");
 
-            // Skip the selected name to avoid duplicates
-            if (name !== selectedName) {
-                var option = document.createElement("option");
-                option.value = name;
-                option.text = name;
-                dropdown.add(option);
+            for (var i = 0; i < options.length; i++) {
+                var text = options[i].text.toLowerCase();
+                if (text.indexOf(input) > -1) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
             }
-        });
-    });
-}
+        }
 
         function populateForm() {
             var selectedName = document.getElementById("nameDropdown").value;
