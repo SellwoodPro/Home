@@ -97,7 +97,7 @@
     </style>
 </head>
 <body>
-    <form id="printForm">
+<form id="printForm">
         <!-- Dropdown list for names -->
         <label for="nameDropdown">Select Name:</label>
         <select id="nameDropdown" onchange="populateForm()">
@@ -119,12 +119,12 @@
         <button type="button" onclick="printContent()">Print</button>
     </form>
 
-    <script>
+ <script>
         // Function to populate the dropdown list with names from the text file
         function populateDropdown(file) {
             $.get(file, function(data) {
                 var names = data.split('\n').map(function(line) {
-                    return line.split(',')[0].trim(); // Assuming names are separated by commas in the text file
+                    return line.split('Name: ')[1].split(',')[0].trim();
                 });
                 var dropdown = document.getElementById("nameDropdown");
 
@@ -146,16 +146,16 @@
             var selectedName = document.getElementById("nameDropdown").value;
 
             // If a name is selected, populate the form fields
-if (selectedName) {
+            if (selectedName) {
                 $.get("contact_details.txt", function(data) {
                     var lines = data.split('\n');
                     for (var i = 0; i < lines.length; i++) {
-                        var details = lines[i].split('-');
-                        if (details[0].trim() === selectedName) {
-                            document.getElementById("name").value = details[0].trim();
-                            document.getElementById("address").value = details[1].replace(/,/g, '<br>').trim(); // Replace "," with "<br>" in the address
-                            document.getElementById("contact").value = details[2].trim();
-                            document.getElementById("notes").value = details[3].trim();
+                        var details = lines[i].split(',');
+                        if (details[0].split('Name: ')[1].trim() === selectedName) {
+                            document.getElementById("name").value = details[0].split('Name: ')[1].trim();
+                            document.getElementById("address").value = details[1].split('Address: ')[1].replace(/,/g, '<br>').trim();
+                            document.getElementById("contact").value = details[2].split('Phone: ')[1].trim();
+                            document.getElementById("notes").value = details[3].split('Notes: ')[1].trim();
                             break;
                         }
                     }
