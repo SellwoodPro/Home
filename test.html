@@ -120,9 +120,9 @@
     </form>
 
     <script>
-       function populateDropdown(file) {
+function populateDropdown(file) {
     $.get(file, function (data) {
-        var entries = data.match(/\[([^\]]+)\]/g);
+        var entries = data.match(/\[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\]/g);
         var dropdown = document.getElementById("nameDropdown");
 
         // Clear existing options
