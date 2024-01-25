@@ -146,14 +146,14 @@
             var selectedName = document.getElementById("nameDropdown").value;
 
             // If a name is selected, populate the form fields
-            if (selectedName) {
+if (selectedName) {
                 $.get("contact_details.txt", function(data) {
                     var lines = data.split('\n');
                     for (var i = 0; i < lines.length; i++) {
-                        var details = lines[i].split(',');
+                        var details = lines[i].split('-');
                         if (details[0].trim() === selectedName) {
                             document.getElementById("name").value = details[0].trim();
-                            document.getElementById("address").value = details[1].trim();
+                            document.getElementById("address").value = details[1].replace(/,/g, '<br>').trim(); // Replace "," with "<br>" in the address
                             document.getElementById("contact").value = details[2].trim();
                             document.getElementById("notes").value = details[3].trim();
                             break;
