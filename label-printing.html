@@ -18,7 +18,7 @@
             margin-top: 0;
         }
 
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 4px;
             margin-bottom: 4px;
@@ -26,6 +26,9 @@
             text-align: center;
             font-family: 'Arial Narrow', Arial, sans-serif;
             font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
 
         textarea {
@@ -98,6 +101,11 @@
 </head>
 <body>
     <form id="printForm">
+   <!-- Dropdown list for names -->
+        <select id="nameDropdown" onchange="populateForm()">
+            <option value="">Select</option>
+        </select>
+
         <label for="name">Name:</label>
         <input type="text" id="name" name="name">
 
@@ -114,6 +122,78 @@
     </form>
 
     <script>
+function populateDropdown(file) {
+    $.get(file, function (data) {
+        var entries = data.match(/\[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\]/g);
+        var dropdown = document.getElementById("nameDropdown");
+
+        // Clear existing options
+        dropdown.innerHTML = '';
+
+        // Add the default "Select" option
+        var selectOption = document.createElement("option");
+        selectOption.value = "";
+        selectOption.text = "Select";
+        dropdown.add(selectOption);
+
+        // Get the selected name (if any)
+        var selectedName = document.getElementById("nameDropdown").value;
+
+        // If a name is selected, add it to the dropdown
+        if (selectedName) {
+            var option = document.createElement("option");
+            option.value = selectedName;
+            option.text = selectedName;
+            dropdown.add(option);
+        }
+
+        // Populate dropdown with only the name from each entry
+        entries.forEach(function (entry) {
+            var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
+
+            // Skip the selected name to avoid duplicates
+            if (name !== selectedName) {
+                var option = document.createElement("option");
+                option.value = name;
+                option.text = name;
+                dropdown.add(option);
+            }
+        });
+    });
+}
+
+        function populateForm() {
+            var selectedName = document.getElementById("nameDropdown").value;
+
+            // If a name is selected, populate the form fields
+            if (selectedName) {
+                $.get("contact-details.txt", function(data) {
+                    var pattern = new RegExp("\\[" + selectedName + "\\] \\[(.*?)\\] \\[(.*?)\\] \\[(.*?)\\]", "i");
+                    var match = data.match(pattern);
+
+                    if (match) {
+                        document.getElementById("name").value = selectedName;
+                        var addressValue = match[1].replace(/, /g, ',\n').replace(/,/g, ''); // Remove commas
+                        document.getElementById("address").value = addressValue;
+                        document.getElementById("contact").value = match[2];
+                        document.getElementById("notes").value = match[3];
+                    } else {
+                        alert("No data found for the selected name: " + selectedName);
+                    }
+                });
+            } else {
+                document.getElementById("name").value = "";
+                document.getElementById("address").value = "";
+                document.getElementById("contact").value = "";
+                document.getElementById("notes").value = "";
+            }
+        }
+
+        // Example: Populate the dropdown list from a file named "contact-details.txt"
+        populateDropdown("contact-details.txt");
+
+        // Rest of your existing script...
+
         function printContent() {
             var nameContent = document.getElementById("name").value.toUpperCase();
             var addressContent = document.getElementById("address").value.toUpperCase();
