@@ -101,7 +101,7 @@
 </head>
 <body>
     <form id="printForm">
-   <!-- Dropdown list for names -->
+        <!-- Dropdown list for names -->
         <select id="nameDropdown" onchange="populateForm()">
             <option value="">Select</option>
         </select>
@@ -118,50 +118,55 @@
         <label for="notes">Notes:</label>
         <input type="text" id="notes" name="notes">
 
+        <!-- Search input for filtering dropdown options -->
+        <input type="text" id="searchInput" placeholder="Search by name" style="width: 100%; padding: 4px; margin-bottom: 4px;">
+
         <button type="button" onclick="printContent()">Print</button>
     </form>
 
     <script>
-function populateDropdown(file) {
-    $.get(file, function (data) {
-        var entries = data.match(/\[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\]/g);
-        var dropdown = document.getElementById("nameDropdown");
+        // Function to populate dropdown with names from file
+        function populateDropdown(file) {
+            $.get(file, function (data) {
+                var entries = data.match(/\[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\]/g);
+                var dropdown = document.getElementById("nameDropdown");
 
-        // Clear existing options
-        dropdown.innerHTML = '';
+                // Clear existing options
+                dropdown.innerHTML = '';
 
-        // Add the default "Select" option
-        var selectOption = document.createElement("option");
-        selectOption.value = "";
-        selectOption.text = "Select";
-        dropdown.add(selectOption);
+                // Add the default "Select" option
+                var selectOption = document.createElement("option");
+                selectOption.value = "";
+                selectOption.text = "Select";
+                dropdown.add(selectOption);
 
-        // Get the selected name (if any)
-        var selectedName = document.getElementById("nameDropdown").value;
+                // Get the selected name (if any)
+                var selectedName = document.getElementById("nameDropdown").value;
 
-        // If a name is selected, add it to the dropdown
-        if (selectedName) {
-            var option = document.createElement("option");
-            option.value = selectedName;
-            option.text = selectedName;
-            dropdown.add(option);
+                // If a name is selected, add it to the dropdown
+                if (selectedName) {
+                    var option = document.createElement("option");
+                    option.value = selectedName;
+                    option.text = selectedName;
+                    dropdown.add(option);
+                }
+
+                // Populate dropdown with only the name from each entry
+                entries.forEach(function (entry) {
+                    var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
+
+                    // Skip the selected name to avoid duplicates
+                    if (name !== selectedName) {
+                        var option = document.createElement("option");
+                        option.value = name;
+                        option.text = name;
+                        dropdown.add(option);
+                    }
+                });
+            });
         }
 
-        // Populate dropdown with only the name from each entry
-        entries.forEach(function (entry) {
-            var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
-
-            // Skip the selected name to avoid duplicates
-            if (name !== selectedName) {
-                var option = document.createElement("option");
-                option.value = name;
-                option.text = name;
-                dropdown.add(option);
-            }
-        });
-    });
-}
-
+        // Function to populate form fields based on selected name
         function populateForm() {
             var selectedName = document.getElementById("nameDropdown").value;
 
@@ -182,6 +187,7 @@ function populateDropdown(file) {
                     }
                 });
             } else {
+                // Clear form fields if no name is selected
                 document.getElementById("name").value = "";
                 document.getElementById("address").value = "";
                 document.getElementById("contact").value = "";
@@ -189,11 +195,7 @@ function populateDropdown(file) {
             }
         }
 
-        // Example: Populate the dropdown list from a file named "contact-details.txt"
-        populateDropdown("contact-details.txt");
-
-        // Rest of your existing script...
-
+        // Function to print content
         function printContent() {
             var nameContent = document.getElementById("name").value.toUpperCase();
             var addressContent = document.getElementById("address").value.toUpperCase();
@@ -224,6 +226,7 @@ function populateDropdown(file) {
             };
         }
 
+        // Function to capitalize first letter after period
         function capitalizeFirstLetterAfterPeriod(str) {
             return str.replace(/\. ([a-z])/g, function(match, group1) {
                 return '. ' + group1.toUpperCase();
@@ -232,6 +235,7 @@ function populateDropdown(file) {
             });
         }
 
+        // Function to format phone number
         function formatPhoneNumber(phoneNumber) {
             phoneNumber = phoneNumber.replace(/^\+64/, '0');
 
@@ -249,6 +253,9 @@ function populateDropdown(file) {
                 return phoneNumber;
             }
         }
+
+        // Populate the dropdown list from a file named "contact-details.txt"
+        populateDropdown("contact-details.txt");
     </script>
 </body>
 </html>
