@@ -1,3 +1,3 @@
-Sellwood Products - 3/75 apollo drive, Rosedale, Auckland - 094770820
-Carters Henderson, 141 Central Park Drive, Henderson, Auckland, 09 837 8796
-ITM Albany - 66 Bush Road, Albany, Auckland - 09 415 6889
+Name: Sellwood Products, Address: 3/75 apollo drive, Rosedale, Auckland, Phone: 094770820, Notes: Notes
+Name: ITM Albany, Address: 66 Bush Road, Albany, Auckland, Phone: 09 415 6889, Notes: Notes
+Name: Carters Henderson, Address: 141 Central Park Drive, Henderson, Auckland, Phone: 098378796, Notes: Notes
