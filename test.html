@@ -161,7 +161,7 @@ function populateForm() {
                 var details = lines[i].split(', ');
                 if (details[0].split('Name: ')[1].trim() === selectedName) {
                     document.getElementById("name").value = details[0].split('Name: ')[1].trim();
-                    document.getElementById("address").value = details[1].split('Address: ')[1].replace(/,/g, '\n').trim();
+                    document.getElementById("address").value = details[1].split('Address: ')[1].replace(/, /g, '\n').trim();
                     document.getElementById("contact").value = details[2].split('Phone: ')[1].trim();
                     document.getElementById("notes").value = details[3].split('Notes: ')[1].trim();
                     break;
