@@ -102,7 +102,7 @@
 <body>
     <form id="printForm">
         <!-- Dropdown list for names -->
-        <select id="nameDropdown" onchange="populateForm()" oninput="filterOptions(this.value)">
+        <select id="nameDropdown" onchange="populateForm()">
             <option value="">Select</option>
         </select>
 
@@ -136,28 +136,13 @@
                 selectOption.text = "Select";
                 dropdown.add(selectOption);
 
-                // Get the selected name (if any)
-                var selectedName = document.getElementById("nameDropdown").value;
-
-                // If a name is selected, add it to the dropdown
-                if (selectedName) {
-                    var option = document.createElement("option");
-                    option.value = selectedName;
-                    option.text = selectedName;
-                    dropdown.add(option);
-                }
-
-                // Populate dropdown with only the name from each entry
+                // Populate dropdown with options
                 entries.forEach(function (entry) {
                     var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
-
-                    // Skip the selected name to avoid duplicates
-                    if (name !== selectedName) {
-                        var option = document.createElement("option");
-                        option.value = name;
-                        option.text = name;
-                        dropdown.add(option);
-                    }
+                    var option = document.createElement("option");
+                    option.value = name;
+                    option.text = name;
+                    dropdown.add(option);
                 });
             });
         }
