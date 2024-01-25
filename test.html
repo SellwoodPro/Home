@@ -120,26 +120,34 @@
     </form>
 
  <script>
-        // Function to populate the dropdown list with names from the text file
-        function populateDropdown(file) {
-            $.get(file, function(data) {
-                var names = data.split('\n').map(function(line) {
-                    return line.split('Name: ')[1].split(',')[0].trim();
-                });
-                var dropdown = document.getElementById("nameDropdown");
+function populateDropdown(file) {
+    $.get(file, function(data) {
+        var names = data.split('\n').map(function(line) {
+            var nameMatch = line.match(/Name: (.+?),/);
+            if (nameMatch) {
+                return nameMatch[1].trim();
+            } else {
+                return null;
+            }
+        }).filter(function(name) {
+            return name !== null;
+        });
 
-                // Clear existing options
-                dropdown.innerHTML = '<option value="">Select a name</option>';
+        var dropdown = document.getElementById("nameDropdown");
 
-                // Populate dropdown with names
-                names.forEach(function(name) {
-                    var option = document.createElement("option");
-                    option.value = name;
-                    option.text = name;
-                    dropdown.add(option);
-                });
-            });
-        }
+        // Clear existing options
+        dropdown.innerHTML = '<option value="">Select a name</option>';
+
+        // Populate dropdown with names
+        names.forEach(function(name) {
+            var option = document.createElement("option");
+            option.value = name;
+            option.text = name;
+            dropdown.add(option);
+        });
+    });
+}
+
 
         // Function to populate form fields when a name is selected
         function populateForm() {
