@@ -149,33 +149,36 @@ function populateDropdown(file) {
 }
 
 
-        // Function to populate form fields when a name is selected
-        function populateForm() {
-            var selectedName = document.getElementById("nameDropdown").value;
+// Function to populate form fields when a name is selected
+function populateForm() {
+    var selectedName = document.getElementById("nameDropdown").value;
 
-            // If a name is selected, populate the form fields
-            if (selectedName) {
-                $.get("contact_details.txt", function(data) {
-                    var lines = data.split('\n');
-                    for (var i = 0; i < lines.length; i++) {
-                        var details = lines[i].split(',');
-                        if (details[0].split('Name: ')[1].trim() === selectedName) {
-                            document.getElementById("name").value = details[0].split('Name: ')[1].trim();
-                            document.getElementById("address").value = details[1].split('Address: ')[1].replace(/,/g, '<br>').trim();
-                            document.getElementById("contact").value = details[2].split('Phone: ')[1].trim();
-                            document.getElementById("notes").value = details[3].split('Notes: ')[1].trim();
-                            break;
-                        }
-                    }
-                });
-            } else {
-                // Clear form fields if no name is selected
-                document.getElementById("name").value = "";
-                document.getElementById("address").value = "";
-                document.getElementById("contact").value = "";
-                document.getElementById("notes").value = "";
+    // If a name is selected, populate the form fields
+    if (selectedName) {
+        $.get("contact_details.txt", function(data) {
+            var lines = data.split('\n');
+            for (var i = 0; i < lines.length; i++) {
+                var details = lines[i].split(',');
+                if (details[0].split('Name: ')[1].trim() === selectedName) {
+                    document.getElementById("name").value = details[0].split('Name: ')[1].trim();
+                    
+                    // Use '\n' for newline character in the address field
+                    document.getElementById("address").value = details[1].split('Address: ')[1].replace(/,/g, '\n').trim();
+                    
+                    document.getElementById("contact").value = details[2].split('Phone: ')[1].trim();
+                    document.getElementById("notes").value = details[3].split('Notes: ')[1].trim();
+                    break;
+                }
             }
-        }
+        });
+    } else {
+        // Clear form fields if no name is selected
+        document.getElementById("name").value = "";
+        document.getElementById("address").value = "";
+        document.getElementById("contact").value = "";
+        document.getElementById("notes").value = "";
+    }
+}
 
         // Example: Populate the dropdown list from a file named "contact_details.txt"
         populateDropdown("contact_details.txt");
