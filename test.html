@@ -159,7 +159,7 @@ function populateDropdown(file) {
 
             // If a name is selected, populate the form fields
             if (selectedName) {
-                $.get("contact_details.txt", function(data) {
+                $.get("contact-details.txt", function(data) {
                     var pattern = new RegExp("\\[" + selectedName + "\\] \\[(.*?)\\] \\[(.*?)\\] \\[(.*?)\\]", "i");
                     var match = data.match(pattern);
 
@@ -181,8 +181,8 @@ function populateDropdown(file) {
             }
         }
 
-        // Example: Populate the dropdown list from a file named "contact_details.txt"
-        populateDropdown("contact_details.txt");
+        // Example: Populate the dropdown list from a file named "contact-details.txt"
+        populateDropdown("contact-details.txt");
 
         // Rest of your existing script...
 
