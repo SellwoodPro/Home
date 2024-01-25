@@ -102,7 +102,7 @@
 <body>
     <form id="printForm">
         <!-- Dropdown list for names -->
-        <select id="nameDropdown" onchange="populateForm()">
+        <select id="nameDropdown" onchange="populateForm()" oninput="filterNames()">
             <option value="">Select</option>
         </select>
 
@@ -118,14 +118,10 @@
         <label for="notes">Notes:</label>
         <input type="text" id="notes" name="notes">
 
-        <!-- Search input for filtering dropdown options -->
-        <input type="text" id="searchInput" placeholder="Search by name" style="width: 100%; padding: 4px; margin-bottom: 4px;">
-
         <button type="button" onclick="printContent()">Print</button>
     </form>
 
     <script>
-        // Function to populate dropdown with names from file
         function populateDropdown(file) {
             $.get(file, function (data) {
                 var entries = data.match(/\[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\]/g);
@@ -140,37 +136,21 @@
                 selectOption.text = "Select";
                 dropdown.add(selectOption);
 
-                // Get the selected name (if any)
-                var selectedName = document.getElementById("nameDropdown").value;
-
-                // If a name is selected, add it to the dropdown
-                if (selectedName) {
-                    var option = document.createElement("option");
-                    option.value = selectedName;
-                    option.text = selectedName;
-                    dropdown.add(option);
-                }
-
-                // Populate dropdown with only the name from each entry
+                // Populate dropdown with all names from file
                 entries.forEach(function (entry) {
                     var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
 
-                    // Skip the selected name to avoid duplicates
-                    if (name !== selectedName) {
-                        var option = document.createElement("option");
-                        option.value = name;
-                        option.text = name;
-                        dropdown.add(option);
-                    }
+                    var option = document.createElement("option");
+                    option.value = name;
+                    option.text = name;
+                    dropdown.add(option);
                 });
             });
         }
 
-        // Function to populate form fields based on selected name
         function populateForm() {
             var selectedName = document.getElementById("nameDropdown").value;
 
-            // If a name is selected, populate the form fields
             if (selectedName) {
                 $.get("contact-details.txt", function(data) {
                     var pattern = new RegExp("\\[" + selectedName + "\\] \\[(.*?)\\] \\[(.*?)\\] \\[(.*?)\\]", "i");
@@ -187,7 +167,6 @@
                     }
                 });
             } else {
-                // Clear form fields if no name is selected
                 document.getElementById("name").value = "";
                 document.getElementById("address").value = "";
                 document.getElementById("contact").value = "";
@@ -195,7 +174,6 @@
             }
         }
 
-        // Function to print content
         function printContent() {
             var nameContent = document.getElementById("name").value.toUpperCase();
             var addressContent = document.getElementById("address").value.toUpperCase();
@@ -226,7 +204,6 @@
             };
         }
 
-        // Function to capitalize first letter after period
         function capitalizeFirstLetterAfterPeriod(str) {
             return str.replace(/\. ([a-z])/g, function(match, group1) {
                 return '. ' + group1.toUpperCase();
@@ -235,7 +212,6 @@
             });
         }
 
-        // Function to format phone number
         function formatPhoneNumber(phoneNumber) {
             phoneNumber = phoneNumber.replace(/^\+64/, '0');
 
@@ -251,6 +227,21 @@
                 return phoneNumber.replace(/^(0800)(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
             } else {
                 return phoneNumber;
+            }
+        }
+
+        function filterNames() {
+            var input, filter, select, options, i;
+            input = document.getElementById("name");
+            filter = input.value.toUpperCase();
+            select = document.getElementById("nameDropdown");
+            options = select.getElementsByTagName("option");
+            for (i = 0; i < options.length; i++) {
+                if (options[i].text.toUpperCase().indexOf(filter) > -1) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
             }
         }
 
