@@ -97,7 +97,7 @@
     </style>
 </head>
 <body>
-<form id="printForm">
+    <form id="printForm">
         <!-- Dropdown list for names -->
         <label for="nameDropdown">Select Name:</label>
         <select id="nameDropdown" onchange="populateForm()">
@@ -119,41 +119,40 @@
         <button type="button" onclick="printContent()">Print</button>
     </form>
 
- <script>
-function populateDropdown(file) {
-    $.get(file, function (data) {
-        var entries = data.match(/\[([^\]]+)\]/g);
-        var dropdown = document.getElementById("nameDropdown");
+    <script>
+        function populateDropdown(file) {
+            $.get(file, function (data) {
+                var entries = data.match(/\[([^\]]+)\]/g);
+                var dropdown = document.getElementById("nameDropdown");
 
-        // Clear existing options
-        dropdown.innerHTML = '';
+                // Clear existing options
+                dropdown.innerHTML = '';
 
-        // Get the selected name (if any)
-        var selectedName = document.getElementById("nameDropdown").value;
+                // Get the selected name (if any)
+                var selectedName = document.getElementById("nameDropdown").value;
 
-        // If a name is selected, add it to the dropdown
-        if (selectedName) {
-            var option = document.createElement("option");
-            option.value = selectedName;
-            option.text = selectedName;
-            dropdown.add(option);
+                // If a name is selected, add it to the dropdown
+                if (selectedName) {
+                    var option = document.createElement("option");
+                    option.value = selectedName;
+                    option.text = selectedName;
+                    dropdown.add(option);
+                }
+
+                // Populate dropdown with only the name from each entry
+                entries.forEach(function (entry) {
+                    var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
+
+                    // Skip the selected name to avoid duplicates
+                    if (name !== selectedName) {
+                        var option = document.createElement("option");
+                        option.value = name;
+                        option.text = name;
+                        dropdown.add(option);
+                    }
+                });
+            });
         }
-
-        // Populate dropdown with only the name from each entry
-        entries.forEach(function (entry) {
-            var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
-
-            // Skip the selected name to avoid duplicates
-            if (name !== selectedName) {
-                var option = document.createElement("option");
-                option.value = name;
-                option.text = name;
-                dropdown.add(option);
-            }
-        });
-    });
-}
-
 
         function populateForm() {
             var selectedName = document.getElementById("nameDropdown").value;
@@ -161,16 +160,19 @@ function populateDropdown(file) {
             // If a name is selected, populate the form fields
             if (selectedName) {
                 $.get("contact_details.txt", function(data) {
-                    var entry = data.match(new RegExp("\\[" + selectedName + "\\] \\[(.*?)\\] \\[(.*?)\\] \\[(.*?)\\]", "i"));
-                    if (entry) {
+                    var pattern = new RegExp("\\[" + selectedName + "\\] \\[(.*?)\\] \\[(.*?)\\] \\[(.*?)\\]", "i");
+                    var match = data.match(pattern);
+
+                    if (match) {
                         document.getElementById("name").value = selectedName;
-                        document.getElementById("address").value = entry[1];
-                        document.getElementById("contact").value = entry[2];
-                        document.getElementById("notes").value = entry[3];
+                        document.getElementById("address").value = match[1];
+                        document.getElementById("contact").value = match[2];
+                        document.getElementById("notes").value = match[3];
+                    } else {
+                        alert("No data found for the selected name: " + selectedName);
                     }
                 });
             } else {
-                // Clear form fields if no name is selected
                 document.getElementById("name").value = "";
                 document.getElementById("address").value = "";
                 document.getElementById("contact").value = "";
@@ -182,6 +184,7 @@ function populateDropdown(file) {
         populateDropdown("contact_details.txt");
 
         // Rest of your existing script...
+
         function printContent() {
             var nameContent = document.getElementById("name").value.toUpperCase();
             var addressContent = document.getElementById("address").value.toUpperCase();
