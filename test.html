@@ -120,38 +120,38 @@
     </form>
 
  <script>
-        function populateDropdown(file) {
-            $.get(file, function(data) {
-                var entries = data.match(/\[([^\]]+)\]/g);
-                var dropdown = document.getElementById("nameDropdown");
+function populateDropdown(file) {
+    $.get(file, function (data) {
+        var entries = data.match(/\[([^\]]+)\]/g);
+        var dropdown = document.getElementById("nameDropdown");
 
-                // Clear existing options
-                dropdown.innerHTML = '';
+        // Clear existing options
+        dropdown.innerHTML = '';
 
-                // Get the selected name (if any)
-                var selectedName = document.getElementById("nameDropdown").value;
+        // Get the selected name (if any)
+        var selectedName = document.getElementById("nameDropdown").value;
 
-                // If a name is selected, add it to the dropdown
-                if (selectedName) {
-                    var option = document.createElement("option");
-                    option.value = selectedName;
-                    option.text = selectedName;
-                    dropdown.add(option);
-                }
+        // If a name is selected, add it to the dropdown
+        if (selectedName) {
+            var option = document.createElement("option");
+            option.value = selectedName;
+            option.text = selectedName;
+            dropdown.add(option);
+        }
 
-                // Populate dropdown with names from the file
-                entries.forEach(function(entry) {
-                    var name = entry.replace(/\[|\]/g, '').trim();
+        // Populate dropdown with only the first field from each entry
+        entries.forEach(function (entry) {
+            var name = entry.replace(/\[|\]/g, '').trim().split(' ')[0]; // Extract the first field
 
-                    // Skip the selected name to avoid duplicates
-                    if (name !== selectedName) {
-                        var option = document.createElement("option");
-                        option.value = name;
-                        option.text = name;
-                        dropdown.add(option);
-                    }
-                });
-});
+            // Skip the selected name to avoid duplicates
+            if (name !== selectedName) {
+                var option = document.createElement("option");
+                option.value = name;
+                option.text = name;
+                dropdown.add(option);
+            }
+        });
+    });
 }
 
         function populateForm() {
