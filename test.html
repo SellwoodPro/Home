@@ -139,9 +139,9 @@ function populateDropdown(file) {
             dropdown.add(option);
         }
 
-        // Populate dropdown with only the first field from each entry
+        // Populate dropdown with only the name from each entry
         entries.forEach(function (entry) {
-            var name = entry.replace(/\[|\]/g, '').trim().split(' ')[0]; // Extract the first field
+            var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
 
             // Skip the selected name to avoid duplicates
             if (name !== selectedName) {
@@ -153,6 +153,7 @@ function populateDropdown(file) {
         });
     });
 }
+
 
         function populateForm() {
             var selectedName = document.getElementById("nameDropdown").value;
