@@ -120,24 +120,39 @@
     </form>
 
  <script>
-        function populateDropdown(file) {
-            $.get(file, function(data) {
-                var entries = data.match(/\[([^\]]+)\]/g);
-                var dropdown = document.getElementById("nameDropdown");
+function populateDropdown(file) {
+    $.get(file, function(data) {
+        var entries = data.match(/\[([^\]]+)\]/g);
+        var dropdown = document.getElementById("nameDropdown");
 
-                // Clear existing options
-                dropdown.innerHTML = '<option value="">Select a name</option>';
+        // Clear existing options
+        dropdown.innerHTML = '';
 
-                // Populate dropdown with names
-                entries.forEach(function(entry) {
-                    var name = entry.replace(/\[|\]/g, '').trim();
-                    var option = document.createElement("option");
-                    option.value = name;
-                    option.text = name;
-                    dropdown.add(option);
-                });
-            });
+        // Get the selected name (if any)
+        var selectedName = document.getElementById("nameDropdown").value;
+
+        // If a name is selected, add it to the dropdown
+        if (selectedName) {
+            var option = document.createElement("option");
+            option.value = selectedName;
+            option.text = selectedName;
+            dropdown.add(option);
         }
+
+        // Populate dropdown with names from the file
+        entries.forEach(function(entry) {
+            var name = entry.replace(/\[|\]/g, '').trim();
+
+            // Skip the selected name to avoid duplicates
+            if (name !== selectedName) {
+                var option = document.createElement("option");
+                option.value = name;
+                option.text = name;
+                dropdown.add(option);
+            }
+        });
+    });
+}
 
         function populateForm() {
             var selectedName = document.getElementById("nameDropdown").value;
