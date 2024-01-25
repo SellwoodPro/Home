@@ -120,63 +120,47 @@
     </form>
 
  <script>
-function populateDropdown(file) {
-    $.get(file, function(data) {
-        var names = data.split('\n').map(function(line) {
-            var nameMatch = line.match(/Name: (.+?),/);
-            if (nameMatch) {
-                return nameMatch[1].trim();
+        function populateDropdown(file) {
+            $.get(file, function(data) {
+                var entries = data.match(/\[([^\]]+)\]/g);
+                var dropdown = document.getElementById("nameDropdown");
+
+                // Clear existing options
+                dropdown.innerHTML = '<option value="">Select a name</option>';
+
+                // Populate dropdown with names
+                entries.forEach(function(entry) {
+                    var name = entry.replace(/\[|\]/g, '').trim();
+                    var option = document.createElement("option");
+                    option.value = name;
+                    option.text = name;
+                    dropdown.add(option);
+                });
+            });
+        }
+
+        function populateForm() {
+            var selectedName = document.getElementById("nameDropdown").value;
+
+            // If a name is selected, populate the form fields
+            if (selectedName) {
+                $.get("contact_details.txt", function(data) {
+                    var entry = data.match(new RegExp("\\[" + selectedName + "\\] \\[(.*?)\\] \\[(.*?)\\] \\[(.*?)\\]", "i"));
+                    if (entry) {
+                        document.getElementById("name").value = selectedName;
+                        document.getElementById("address").value = entry[1];
+                        document.getElementById("contact").value = entry[2];
+                        document.getElementById("notes").value = entry[3];
+                    }
+                });
             } else {
-                return null;
+                // Clear form fields if no name is selected
+                document.getElementById("name").value = "";
+                document.getElementById("address").value = "";
+                document.getElementById("contact").value = "";
+                document.getElementById("notes").value = "";
             }
-        }).filter(function(name) {
-            return name !== null;
-        });
-
-        var dropdown = document.getElementById("nameDropdown");
-
-        // Clear existing options
-        dropdown.innerHTML = '<option value="">Select a name</option>';
-
-        // Populate dropdown with names
-        names.forEach(function(name) {
-            var option = document.createElement("option");
-            option.value = name;
-            option.text = name;
-            dropdown.add(option);
-        });
-    });
-}
-
-
-// Function to populate form fields when a name is selected
-function populateForm() {
-    var selectedName = document.getElementById("nameDropdown").value;
-
-    // If a name is selected, populate the form fields
-    if (selectedName) {
-        $.get("contact_details.txt", function(data) {
-            var lines = data.split('\n');
-            for (var i = 0; i < lines.length; i++) {
-                var details = lines[i].split(', ');
-                if (details[0].split('Name: ')[1].trim() === selectedName) {
-                    document.getElementById("name").value = details[0].split('Name: ')[1].trim();
-                    document.getElementById("address").value = details[1].split('Address: ')[1].replace(/, /g, '\n').trim();
-                    document.getElementById("contact").value = details[2].split('Phone: ')[1].trim();
-                    document.getElementById("notes").value = details[3].split('Notes: ')[1].trim();
-                    break;
-                }
-            }
-        });
-    } else {
-        // Clear form fields if no name is selected
-        document.getElementById("name").value = "";
-        document.getElementById("address").value = "";
-        document.getElementById("contact").value = "";
-        document.getElementById("notes").value = "";
-    }
-}
-
+        }
 
         // Example: Populate the dropdown list from a file named "contact_details.txt"
         populateDropdown("contact_details.txt");
