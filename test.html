@@ -103,7 +103,7 @@
     <form id="printForm">
    <!-- Dropdown list for names -->
         <select id="nameDropdown" onchange="populateForm()">
-            <option value="">Select a name</option>
+            <option value="">Select</option>
         </select>
 
         <label for="name">Name:</label>
@@ -129,6 +129,12 @@ function populateDropdown(file) {
 
         // Clear existing options
         dropdown.innerHTML = '';
+
+        // Add the default "Select" option
+        var selectOption = document.createElement("option");
+        selectOption.value = "";
+        selectOption.text = "Select";
+        dropdown.add(selectOption);
 
         // Get the selected name (if any)
         var selectedName = document.getElementById("nameDropdown").value;
