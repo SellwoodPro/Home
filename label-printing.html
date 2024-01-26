@@ -176,13 +176,7 @@ function populateForm() {
                 var addressValue = match[1].replace(/, /g, ',\n').replace(/,/g, ''); // Remove commas
                 document.getElementById("address").value = addressValue;
                 document.getElementById("contact").value = match[2];
-
-                // Check if notes field is empty
-                if (match[3].trim() !== "[]") {
-                    document.getElementById("notes").value = match[3];
-                } else {
-                    document.getElementById("notes").value = "";
-                }
+                document.getElementById("notes").value = match[3] || ""; // Use empty string if notes field is empty
             } else {
                 alert("No data found for the selected name: " + selectedName);
             }
