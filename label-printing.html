@@ -174,9 +174,12 @@ function populateForm() {
             if (match) {
                 document.getElementById("name").value = selectedName;
                 var addressValue = match[1].replace(/, /g, ',\n').replace(/,/g, ''); // Remove commas
+                var contactValue = match[2] || ""; // Use empty string if contact field is empty
+                var notesValue = match[3] || ""; // Use empty string if notes field is empty
+
                 document.getElementById("address").value = addressValue;
-                document.getElementById("contact").value = match[2];
-                document.getElementById("notes").value = match[3] || ""; // Use empty string if notes field is empty
+                document.getElementById("contact").value = contactValue;
+                document.getElementById("notes").value = notesValue;
             } else {
                 alert("No data found for the selected name: " + selectedName);
             }
