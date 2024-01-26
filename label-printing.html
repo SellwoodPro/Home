@@ -124,7 +124,7 @@
     <script>
 function populateDropdown(file) {
     $.get(file, function (data) {
-        var entries = data.match(/\[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\]/g);
+        var entries = data.match(/\[([^\]]*?)\]/g); // Updated regular expression
         var dropdown = document.getElementById("nameDropdown");
 
         // Clear existing options
@@ -149,7 +149,7 @@ function populateDropdown(file) {
 
         // Populate dropdown with only the name from each entry
         entries.forEach(function (entry) {
-            var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
+            var name = entry.match(/\[([^\]]*?)\]/)[1].trim(); // Extract the name
 
             // Skip the selected name to avoid duplicates
             if (name !== selectedName) {
