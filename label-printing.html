@@ -122,31 +122,32 @@
     </form>
 
     <script>
- function populateDropdown(file) {
-        $.get(file, function (data) {
-            var entries = data.match(/\[([^\]]+)\] \[([^\]]*)\] \[([^\]]*)\] \[([^\]]*)\]/g);
-            var dropdown = document.getElementById("nameDropdown");
+function populateDropdown(file) {
+    $.get(file, function (data) {
+        var entries = data.match(/\[([^\]]+)\] \[([^\]]*)\] \[([^\]]*)\] \[([^\]]*)\]/g);
+        var dropdown = document.getElementById("nameDropdown");
 
-            // Clear existing options
-            dropdown.innerHTML = '';
+        // Clear existing options
+        dropdown.innerHTML = '';
 
-            // Add the default "Select" option
-            var selectOption = document.createElement("option");
-            selectOption.value = "";
-            selectOption.text = "Select";
-            dropdown.add(selectOption);
+        // Add the default "Select" option
+        var selectOption = document.createElement("option");
+        selectOption.value = "";
+        selectOption.text = "Select";
+        dropdown.add(selectOption);
 
-            // Populate dropdown with all names from each entry
-            entries.forEach(function (entry) {
-                var name = entry.match(/\[([^\]]+)\]/)[1].trim(); // Extract the name
+        // Populate dropdown with all names from each entry
+        entries.forEach(function (entry) {
+            var matches = entry.match(/\[([^\]]+)\] \[([^\]]*)\] \[([^\]]*)\] \[([^\]]*)\]/);
+            var name = matches[1].trim(); // Extract the name
 
-                var option = document.createElement("option");
-                option.value = name;
-                option.text = name;
-                dropdown.add(option);
-            });
+            var option = document.createElement("option");
+            option.value = name;
+            option.text = name;
+            dropdown.add(option);
         });
-    }
+    });
+}
 
         function populateForm() {
             var selectedName = document.getElementById("nameDropdown").value;
