@@ -124,35 +124,29 @@
     <script>
 function populateDropdown(file) {
     $.get(file, function (data) {
-        var entries = data.match(/\[([^\]]*?)\]/g); // Updated regular expression
-        var dropdown = document.getElementById("nameDropdown");
+        var entries = data.match(/\[(.*?)\]/g); // Updated regular expression
 
-        // Clear existing options
+        var dropdown = document.getElementById("nameDropdown");
         dropdown.innerHTML = '';
 
-        // Add the default "Select" option
         var selectOption = document.createElement("option");
         selectOption.value = "";
         selectOption.text = "Select";
         dropdown.add(selectOption);
 
-        // Get the selected name (if any)
         var selectedName = document.getElementById("nameDropdown").value;
 
-        // If a name is selected, add it to the dropdown
-        if (selectedName) {
-            var option = document.createElement("option");
-            option.value = selectedName;
-            option.text = selectedName;
-            dropdown.add(option);
-        }
-
-        // Populate dropdown with only the name from each entry
         entries.forEach(function (entry) {
-            var name = entry.match(/\[([^\]]*?)\]/)[1].trim(); // Extract the name
+            var parts = entry.match(/\[(.*?)\]/g).map(function(item) {
+                return item.slice(1, -1).trim();
+            });
 
-            // Skip the selected name to avoid duplicates
-            if (name !== selectedName) {
+            var name = parts[0];
+            var address = parts[1];
+            var contact = parts[2];
+            var notes = parts[3];
+
+            if (name !== selectedName && name !== "") {
                 var option = document.createElement("option");
                 option.value = name;
                 option.text = name;
