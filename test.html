@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Printable Form</title>
@@ -118,7 +119,7 @@
         <input type="text" id="notes" name="notes">
 
         <button type="button" onclick="printContent()">Print</button>
-        <button type="button" onclick="saveContent()">Save</button> <!-- Added Save button -->
+        <button type="button" onclick="confirmAndSave()">Save</button> <!-- New Save Button -->
     </form>
 
     <script>
@@ -176,9 +177,6 @@
             }
         }
 
-        // Example: Populate the dropdown list from a file named "contact-details.txt"
-        populateDropdown("contact-details.txt");
-
         function printContent() {
             var nameContent = document.getElementById("name").value.toUpperCase();
             var addressContent = document.getElementById("address").value.toUpperCase();
@@ -209,59 +207,6 @@
             };
         }
 
-        function saveContent() {
-            var confirmed = confirm("Are you sure you want to save to file?");
-            if (confirmed) {
-                var nameContent = document.getElementById("name").value.trim();
-                var addressContent = document.getElementById("address").value.trim();
-                var contactContent = document.getElementById("contact").value.trim();
-                var notesContent = document.getElementById("notes").value.trim();
-
-                var contentToWrite = "[" + nameContent + "] [" + addressContent + "] [" + contactContent + "] [" + notesContent + "]\n";
-
-                // Create a Blob object
-                var blob = new Blob([contentToWrite], { type: 'text/plain' });
-
-                // Create a temporary anchor element
-                var a = document.createElement('a');
-                a.href = window.URL.createObjectURL(blob);
-                a.download = 'contact-details.txt'; // Set the filename
-                a.style.display = 'none';
-
-                // Append the anchor element to the body
-                document.body.appendChild(a);
-
-                // Trigger a click event to prompt download
-                a.click();
-
-                // Cleanup
-                document.body.removeChild(a);
-
-                // Send email
-                sendEmail();
-            }
-        }
-
-        function sendEmail() {
-            var nameContent = document.getElementById("name").value.trim();
-            var addressContent = document.getElementById("address").value.trim();
-            var contactContent = document.getElementById("contact").value.trim();
-            var notesContent = document.getElementById("notes").value.trim();
-
-            // Construct the email body
-            var emailBody = "Name: " + nameContent + "\n";
-            emailBody += "Address: " + addressContent + "\n";
-            emailBody += "Contact Number: " + contactContent + "\n";
-            emailBody += "Notes: " + notesContent;
-
-            // Compose the email
-            var subject = "Contact Details";
-            var mailtoLink = "rowan@sellwood.co.nz" + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(emailBody);
-
-            // Open the default email client with the pre-filled details
-            window.location.href = mailtoLink;
-        }
-
         function capitalizeFirstLetterAfterPeriod(str) {
             return str.replace(/\. ([a-z])/g, function(match, group1) {
                 return '. ' + group1.toUpperCase();
@@ -287,6 +232,35 @@
                 return phoneNumber;
             }
         }
+        
+        function confirmAndSave() {
+            if (confirm("Are you sure you want to save to file?")) {
+                saveToFile();
+            }
+        }
+
+        function saveToFile() {
+            var name = document.getElementById("name").value.trim();
+            var address = document.getElementById("address").value.trim();
+            var contact = document.getElementById("contact").value.trim();
+            var notes = document.getElementById("notes").value.trim();
+
+            var fileContent = `[${name}] [${address}] [${contact}] [${notes}]`;
+
+            // Create a data URI
+            var uriContent = "data:text/plain;charset=utf-8," + encodeURIComponent(fileContent);
+
+            // Open the data URI in a new window
+            var newWindow = window.open(uriContent, '_blank');
+            if (newWindow) {
+                newWindow.focus();
+            } else {
+                alert("Please allow pop-ups for this site to save the file.");
+            }
+        }
+
+        // Example: Populate the dropdown list from a file named "contact-details.txt"
+        populateDropdown("contact-details.txt");
     </script>
 </body>
 </html>
