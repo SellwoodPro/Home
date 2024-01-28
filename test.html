@@ -236,7 +236,30 @@
 
                 // Cleanup
                 document.body.removeChild(a);
+
+                // Send email
+                sendEmail();
             }
+        }
+
+        function sendEmail() {
+            var nameContent = document.getElementById("name").value.trim();
+            var addressContent = document.getElementById("address").value.trim();
+            var contactContent = document.getElementById("contact").value.trim();
+            var notesContent = document.getElementById("notes").value.trim();
+
+            // Construct the email body
+            var emailBody = "Name: " + nameContent + "\n";
+            emailBody += "Address: " + addressContent + "\n";
+            emailBody += "Contact Number: " + contactContent + "\n";
+            emailBody += "Notes: " + notesContent;
+
+            // Compose the email
+            var subject = "Contact Details";
+            var mailtoLink = "rowan@sellwood.co.nz" + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(emailBody);
+
+            // Open the default email client with the pre-filled details
+            window.location.href = mailtoLink;
         }
 
         function capitalizeFirstLetterAfterPeriod(str) {
