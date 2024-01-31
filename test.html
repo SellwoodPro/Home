@@ -1,266 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Printable Form</title>
-    <style>
-        body {
-            width: 250px;
-            margin: 0 auto;
-            text-align: center;
-            font-family: 'Arial Narrow', Arial, sans-serif;
-            margin-top: 0;
-        }
-
-        form {
-            margin-top: 0;
-        }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 4px;
-            margin-bottom: 4px;
-            margin-top: 5px;
-            text-align: center;
-            font-family: 'Arial Narrow', Arial, sans-serif;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        textarea {
-            resize: vertical;
-        }
-
-        button {
-            width: 100px;
-            padding: 10px 20px;
-            background-color: #ED1C24;
-            border: 1px solid #ED1C24;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            transition-duration: 0.5s;
-            font-family: 'Arial Narrow', Arial, sans-serif;
-            font-weight: bold;
-            font-size: 18px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        button:hover {
-            background-color: #fff;
-            color: #ED1C24;
-        }
-
-        button:active {
-            background-color: #3e8e41;
-        }
-
-        @media print {
-            body {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-family: "Arial Narrow", "Arial", sans-serif;
-                margin: 0;
-                padding: 0;
-            }
-
-            .content-container {
-                text-align: center;
-                font-size: 28px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-            }
-
-            .content-container p {
-                margin: 0;
-                display: inline;
-            }
-
-            .content-container .category {
-                margin: 10px 0;
-            }
-
-            .notes {
-                font-size: 12pt;
-            }
-
-            .contact {
-                font-size: 20px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search and Populate Form</title>
+  <style>
+    /* Add your CSS styles here */
+  </style>
 </head>
 <body>
-    <form id="printForm">
-        <!-- Dropdown list for names -->
-        <select id="nameDropdown" onchange="populateForm()">
-            <option value="">Selecto</option>
-        </select>
 
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name">
+  <input type="text" id="searchInput" placeholder="Search...">
+  <ul id="searchResults"></ul>
 
-        <label for="address">Address:</label>
-        <textarea id="address" name="address" rows="4"></textarea>
+  <form id="infoForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" readonly>
+    <label for="street">Street:</label>
+    <input type="text" id="street" readonly>
+    <label for="suburb">Suburb:</label>
+    <input type="text" id="suburb" readonly>
+    <label for="city">City:</label>
+    <input type="text" id="city" readonly>
+    <label for="notes">Notes:</label>
+    <textarea id="notes" readonly></textarea>
+  </form>
 
-        <label for="contact">Contact Number:</label>
-        <input type="text" id="contact" name="contact">
+  <script>
+    // Assuming data.csv has columns: Name, Street, Suburb, City, Notes
+    const csvFilePath = 'https://raw.githubusercontent.com/SellwoodPro/sellwood/main/Contacts.csv';
 
-        <label for="notes">Notes:</label>
-        <input type="text" id="notes" name="notes">
+    // Fetch data from CSV file
+    fetch(csvFilePath)
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1); // Skip header row
+        const dataArray = rows.map(row => row.split(','));
 
-        <button type="button" onclick="printContent()">Print</button>
-        <button type="button" onclick="confirmAndSave()">Save</button> <!-- New Save Button -->
-    </form>
+        // Your search logic here
+        document.getElementById('searchInput').addEventListener('input', function () {
+          const searchTerm = this.value.toLowerCase();
+          const searchResults = dataArray.filter(row =>
+            row.some(col => col.toLowerCase().includes(searchTerm))
+          );
 
-    <script>
-        function populateDropdown(file) {
-            $.get(file, function (data) {
-                var entries = data.match(/\[([^\]]+)\] \[([^\]]*)\] \[([^\]]*)\] \[([^\]]*)\]/g);
-                var dropdown = document.getElementById("nameDropdown");
+          // Display search results
+          const resultsList = document.getElementById('searchResults');
+          resultsList.innerHTML = '';
 
-                // Clear existing options
-                dropdown.innerHTML = '';
-
-                // Add the default "Select" option
-                var selectOption = document.createElement("option");
-                selectOption.value = "";
-                selectOption.text = "Select";
-                dropdown.add(selectOption);
-
-                // Populate dropdown with all names from each entry
-                entries.forEach(function (entry) {
-                    var matches = entry.match(/\[([^\]]+)\] \[([^\]]*)\] \[([^\]]*)\] \[([^\]]*)\]/);
-                    var name = matches[1].trim(); // Extract the name
-
-                    var option = document.createElement("option");
-                    option.value = name;
-                    option.text = name;
-                    dropdown.add(option);
-                });
+          searchResults.forEach(result => {
+            const listItem = document.createElement('li');
+            listItem.textContent = result[0]; // Assuming the first column is the Name
+            listItem.addEventListener('click', function () {
+              // Populate the form fields
+              document.getElementById('name').value = result[0];
+              document.getElementById('street').value = result[1];
+              document.getElementById('suburb').value = result[2];
+              document.getElementById('city').value = result[3];
+              document.getElementById('notes').value = result[4];
             });
-        }
 
-        function populateForm() {
-            var selectedName = document.getElementById("nameDropdown").value;
+            resultsList.appendChild(listItem);
+          });
+        });
+      });
+  </script>
 
-            // If a name is selected, populate the form fields
-            if (selectedName) {
-                $.get("contact-details.txt", function(data) {
-                    var pattern = new RegExp("\\[" + selectedName + "\\] \\[(.*?)\\] \\[(.*?)\\] \\[(.*?)\\]", "i");
-                    var match = data.match(pattern);
-
-                    if (match) {
-                        document.getElementById("name").value = selectedName;
-                        var addressValue = match[1].replace(/, /g, ',\n').replace(/,/g, ''); // Remove commas
-                        document.getElementById("address").value = addressValue;
-                        document.getElementById("contact").value = match[2];
-                        document.getElementById("notes").value = match[3];
-                    } else {
-                        alert("No data found for the selected name: " + selectedName);
-                    }
-                });
-            } else {
-                document.getElementById("name").value = "";
-                document.getElementById("address").value = "";
-                document.getElementById("contact").value = "";
-                document.getElementById("notes").value = "";
-            }
-        }
-
-        function printContent() {
-            var nameContent = document.getElementById("name").value.toUpperCase();
-            var addressContent = document.getElementById("address").value.toUpperCase();
-            var contactContent = formatPhoneNumber(document.getElementById("contact").value.toUpperCase().replace(/[ -]/g, ''));
-            var notesContent = capitalizeFirstLetterAfterPeriod(document.getElementById("notes").value.toLowerCase());
-
-            var printWindow = window.open('', '_blank');
-            printWindow.document.write('<html><head><title>Printable Content</title><style>');
-            printWindow.document.write('body { font-family: "Arial Narrow", "Arial", sans-serif; margin: 0; padding: 0; }');
-            printWindow.document.write('@media print { body { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: "Arial Narrow", "Arial", sans-serif; } }');
-            printWindow.document.write('.content-container { text-align: center; font-size: 28px; margin: 0 auto; max-width: 600px; }');
-            printWindow.document.write('.content-container p { margin: 0; }');
-            printWindow.document.write('.content-container .category { margin: 10px 0; }');
-            printWindow.document.write('.notes { font-size: 12pt; }');
-            printWindow.document.write('.contact { font-size: 20px; }');
-            printWindow.document.write('</style></head><body>');
-            printWindow.document.write('<div class="content-container">');
-            printWindow.document.write('<p class="category"><strong>' + nameContent + '</strong></p>');
-            printWindow.document.write('<div class="category"><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
-            printWindow.document.write('<p class="category contact">' + contactContent + '</p>');
-            printWindow.document.write('<p class="category notes"><em>' + notesContent + '</em></p>');
-            printWindow.document.write('</div>');
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-
-            printWindow.onload = function() {
-                printWindow.print();
-            };
-        }
-
-        function capitalizeFirstLetterAfterPeriod(str) {
-            return str.replace(/\. ([a-z])/g, function(match, group1) {
-                return '. ' + group1.toUpperCase();
-            }).replace(/^[a-z]/, function(match) {
-                return match.toUpperCase();
-            });
-        }
-
-        function formatPhoneNumber(phoneNumber) {
-            phoneNumber = phoneNumber.replace(/^\+64/, '0');
-
-            var mobilePattern = /^(021|022|027|029)(\d{3}|\d{4})(\d{4}|\d{3})$/;
-            var landlinePattern = /^(?!08)(0[3-9])(\d{3}|\d{4})(\d{4}|\d{3})$/;
-            var tollFreePattern = /^(0800)(\d{3}|\d{4})(\d{4}|\d{3})$/;
-
-            if (mobilePattern.test(phoneNumber)) {
-                return phoneNumber.replace(/^(021|022|027|029)(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
-            } else if (landlinePattern.test(phoneNumber)) {
-                return phoneNumber.replace(/^(?!08)(0[3-9])(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
-            } else if (tollFreePattern.test(phoneNumber)) {
-                return phoneNumber.replace(/^(0800)(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
-            } else {
-                return phoneNumber;
-            }
-        }
-        
-        function confirmAndSave() {
-            if (confirm("Are you sure you want to save to file?")) {
-                saveToFile();
-            }
-        }
-
-        function saveToFile() {
-            var name = document.getElementById("name").value.trim();
-            var address = document.getElementById("address").value.trim();
-            var contact = document.getElementById("contact").value.trim();
-            var notes = document.getElementById("notes").value.trim();
-
-            var fileContent = `[${name}] [${address}] [${contact}] [${notes}]`;
-
-            // Create a data URI
-            var uriContent = "data:text/plain;charset=utf-8," + encodeURIComponent(fileContent);
-
-            // Open the data URI in a new window
-            var newWindow = window.open(uriContent, '_blank');
-            if (newWindow) {
-                newWindow.focus();
-            } else {
-                alert("Please allow pop-ups for this site to save the file.");
-            }
-        }
-
-        // Example: Populate the dropdown list from a file named "contact-details.txt"
-        populateDropdown("contact-details.txt");
-    </script>
 </body>
 </html>
