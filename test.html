@@ -32,7 +32,7 @@
       padding: 10px;
       font-size: 16px;
       border: none;
-      border-bottom: 2px solid #007bff;
+      border-bottom: 2px solid #d72c20;
       outline: none;
       box-sizing: border-box;
       margin-bottom: 20px;
@@ -59,8 +59,7 @@
     }
     
     #infoForm label {
-      display: block;
-      /* Remove margin-bottom */
+      display: none; /* Hide labels */
     }
     
     #infoForm input[type="text"],
@@ -75,12 +74,17 @@
       resize: vertical;
       text-align: center;
     }
+
+    #infoForm input[type="text"]::placeholder,
+    #infoForm textarea::placeholder {
+      color: #ccc; /* Light grey placeholder */
+    }
     
     #infoForm button {
       width: 100%;
       padding: 10px 20px;
       font-size: 16px;
-      background-color: #007bff;
+      background-color: #d72c20;
       color: #fff;
       border: none;
       border-radius: 5px;
@@ -90,7 +94,7 @@
     }
     
     #infoForm button:hover {
-      background-color: #0056b3;
+      background-color: #9a1f16;
     }
   </style>
 </head>
@@ -101,14 +105,10 @@
     <div id="searchResults"></div>
 
     <form id="infoForm">
-      <label for="name">Name:</label>
-      <input type="text" id="name">
-      <label for="address">Address:</label>
-      <textarea id="address" rows="4"></textarea>
-      <label for="phone">Phone:</label>
-      <input type="text" id="phone">
-      <label for="notes">Notes:</label>
-      <input type="text" id="notes">
+      <input type="text" id="name" placeholder="Name">
+      <textarea id="address" placeholder="Street&#10;Suburb&#10;City" rows="4"></textarea>
+      <input type="text" id="phone" placeholder="Phone">
+      <input type="text" id="notes" placeholder="Notes">
       <!-- Add print button -->
       <button type="button" onclick="printContent()">Print</button>
     </form>
