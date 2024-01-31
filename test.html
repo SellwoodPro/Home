@@ -1,241 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Printable Form</title>
-    <style>
-        body {
-            width: 250px;
-            margin: 0 auto;
-            text-align: center;
-            font-family: 'Arial Narrow', Arial, sans-serif;
-            margin-top: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search and Populate Form</title>
+  <style>
+    /* Add your CSS styles here */
+    #searchResults {
+      position: absolute;
+      width: 100%;
+      max-height: 150px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      z-index: 1;
+    }
 
-        form {
-            margin-top: 0;
-        }
+    #searchResults li {
+      padding: 8px;
+      cursor: pointer;
+      list-style: none;
+    }
 
-        input, textarea, select {
-            width: 100%;
-            padding: 4px;
-            margin-bottom: 4px;
-            margin-top: 5px;
-            text-align: center;
-            font-family: 'Arial Narrow', Arial, sans-serif;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        textarea {
-            resize: vertical;
-        }
-
-        button {
-            width: 100px;
-            padding: 10px 20px;
-            background-color: #ED1C24;
-            border: 1px solid #ED1C24;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            transition-duration: 0.5s;
-            font-family: 'Arial Narrow', Arial, sans-serif;
-            font-weight: bold;
-            font-size: 18px;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        button:hover {
-            background-color: #fff;
-            color: #ED1C24;
-        }
-
-        button:active {
-            background-color: #3e8e41;
-        }
-
-        @media print {
-            body {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-family: "Arial Narrow", "Arial", sans-serif;
-                margin: 0;
-                padding: 0;
-            }
-
-            .content-container {
-                text-align: center;
-                font-size: 28px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
-            }
-
-            .content-container p {
-                margin: 0;
-                display: inline;
-            }
-
-            .content-container .category {
-                margin: 10px 0;
-            }
-
-            .notes {
-                font-size: 12pt;
-            }
-
-            .contact {
-                font-size: 20px;
-            }
-        }
-    </style>
+    #searchResults li:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
 </head>
 <body>
-    <form id="printForm">
-        <!-- Dropdown list for names -->
-        <select id="nameDropdown" onchange="populateForm()">
-            <option value="">Select</option>
-        </select>
 
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name">
+  <input type="text" id="searchInput" placeholder="Search...">
+  <div id="searchResults"></div>
 
-        <label for="address">Address:</label>
-        <textarea id="address" name="address" rows="4"></textarea>
+  <form id="infoForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name">
+    <label for="address">Address:</label>
+    <textarea id="address" rows="4"></textarea>
+    <label for="phone">Phone:</label>
+    <input type="text" id="phone">
+    <label for="notes">Notes:</label>
+    <textarea id="notes"></textarea>
+    <!-- Add print button -->
+    <button type="button" onclick="printContent()">Print</button>
+  </form>
 
-        <label for="contact">Contact Number:</label>
-        <input type="text" id="contact" name="contact">
+  <script>
+    // Your existing JavaScript code here
+    // Assuming data.csv has columns: Name, Street, Suburb, City, Phone, Notes
+    const csvFilePath = 'https://raw.githubusercontent.com/SellwoodPro/sellwood/main/Contacts.csv';
 
-        <label for="notes">Notes:</label>
-        <input type="text" id="notes" name="notes">
+    // Fetch data from CSV file
+    fetch(csvFilePath)
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1); // Skip header row
+        const dataArray = rows.map(row => row.split(','));
 
-        <button type="button" onclick="printContent()">Print</button>
-    </form>
+        // Your search logic here
+        document.getElementById('searchInput').addEventListener('input', function () {
+          const searchTerm = this.value.toLowerCase();
+          const searchResults = dataArray.filter(row =>
+            row.some(col => col.toLowerCase().includes(searchTerm))
+          );
 
-    <script>
-        $(document).ready(function() {
-            $.ajax({
-                type: "GET",
-                url: "contacts.csv",
-                dataType: "text",
-                success: function(data) {
-                    processData(data);
-                }
+          // Display search results in dropdown
+          const resultsDropdown = document.getElementById('searchResults');
+          resultsDropdown.innerHTML = '';
+
+          searchResults.forEach(result => {
+            const listItem = document.createElement('div');
+            listItem.textContent = result[0]; // Assuming the first column is the Name
+            listItem.addEventListener('click', function () {
+              // Populate the form fields
+              document.getElementById('name').value = result[0];
+              document.getElementById('address').value = `${result[1] || ''}\n${result[2] || ''}\n${result[3] || ''}`;
+              document.getElementById('phone').value = result[4] || '';
+              document.getElementById('notes').value = result[5] || '';
+              resultsDropdown.innerHTML = ''; // Clear dropdown after selection
             });
+
+            resultsDropdown.appendChild(listItem);
+          });
         });
+      });
 
-        function processData(allText) {
-            var allTextLines = allText.split(/\r\n|\n/);
-            var headers = allTextLines[0].split(',');
+    function printContent() {
+      var nameContent = document.getElementById("name").value.toUpperCase();
+      var addressContent = document.getElementById("address").value.toUpperCase();
+      var phoneContent = formatPhoneNumber(document.getElementById("phone").value.toUpperCase().replace(/[ -]/g, ''));
+      var notesContent = capitalizeFirstLetterAfterPeriod(document.getElementById("notes").value.toLowerCase());
 
-            var dropdown = document.getElementById("nameDropdown");
+      var printWindow = window.open('', '_blank');
+      printWindow.document.write('<html><head><title>Printable Content</title><style>');
+      printWindow.document.write('body { font-family: "Arial Narrow", "Arial", sans-serif; margin: 0; padding: 0; }');
+      printWindow.document.write('@media print { body { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: "Arial Narrow", "Arial", sans-serif; } }');
+      printWindow.document.write('.content-container { text-align: center; font-size: 28px; margin: 0 auto; max-width: 600px; }');
+      printWindow.document.write('.content-container p { margin: 0; }');
+      printWindow.document.write('.content-container .category { margin: 10px 0; }');
+      printWindow.document.write('.notes { font-size: 12pt; }');
+      printWindow.document.write('.contact { font-size: 20px; }');
+      printWindow.document.write('</style></head><body>');
+      printWindow.document.write('<div class="content-container">');
+      printWindow.document.write('<p class="category"><strong>' + nameContent + '</strong></p>');
+      printWindow.document.write('<div class="category"><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
+      printWindow.document.write('<p class="category contact">' + phoneContent + '</p>');
+      printWindow.document.write('<p class="category notes"><em>' + notesContent + '</em></p>');
+      printWindow.document.write('</div>');
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
 
-            for (var i = 1; i < allTextLines.length; i++) {
-                var data = allTextLines[i].split(',');
-                var option = document.createElement("option");
-                option.value = data[0]; // Assuming name is the first column
-                option.text = data[0]; // Assuming name is the first column
-                dropdown.add(option);
-            }
-        }
+      printWindow.onload = function() {
+          printWindow.print();
+      };
+    }
 
-        function populateForm() {
-            var selectedName = $("#nameDropdown").val();
+    function capitalizeFirstLetterAfterPeriod(str) {
+      return str.replace(/\. ([a-z])/g, function(match, group1) {
+        return '. ' + group1.toUpperCase();
+      }).replace(/^[a-z]/, function(match) {
+        return match.toUpperCase();
+      });
+    }
 
-            if (selectedName) {
-                $.ajax({
-                    type: "GET",
-                    url: "contacts.csv",
-                    dataType: "text",
-                    success: function(data) {
-                        var allTextLines = data.split(/\r\n|\n/);
-                        var headers = allTextLines[0].split(',');
+    function formatPhoneNumber(phoneNumber) {
+      phoneNumber = phoneNumber.replace(/^\+64/, '0');
 
-                        for (var i = 1; i < allTextLines.length; i++) {
-                            var data = allTextLines[i].split(',');
-                            if (data[0] === selectedName) {
-                                $("#name").val(data[0]);
-                                var addressValue = data[1] + '\n' + data[2] + '\n' + data[3]; // Assuming street, suburb, and city are in columns 1, 2, and 3 respectively
-                                $("#address").val(addressValue);
-                                $("#contact").val(data[4]); // Assuming phone is in column 4
-                                $("#notes").val(data[5]); // Assuming notes are in column 5
-                                break;
-                            }
-                        }
-                    }
-                });
-            } else {
-                $("#name").val("");
-                $("#address").val("");
-                $("#contact").val("");
-                $("#notes").val("");
-            }
-        }
+      var mobilePattern = /^(021|022|027|029)(\d{3}|\d{4})(\d{4}|\d{3})$/;
+      var landlinePattern = /^(?!08)(0[3-9])(\d{3}|\d{4})(\d{4}|\d{3})$/;
+      var tollFreePattern = /^(0800)(\d{3}|\d{4})(\d{4}|\d{3})$/;
 
-        function printContent() {
-            var nameContent = document.getElementById("name").value.toUpperCase();
-            var addressContent = document.getElementById("address").value.toUpperCase();
-            var contactContent = formatPhoneNumber(document.getElementById("contact").value.toUpperCase().replace(/[ -]/g, ''));
-            var notesContent = capitalizeFirstLetterAfterPeriod(document.getElementById("notes").value.toLowerCase());
+      if (mobilePattern.test(phoneNumber)) {
+        return phoneNumber.replace(/^(021|022|027|029)(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
+      } else if (landlinePattern.test(phoneNumber)) {
+        return phoneNumber.replace(/^(?!08)(0[3-9])(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
+      } else if (tollFreePattern.test(phoneNumber)) {
+        return phoneNumber.replace(/^(0800)(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
+      } else {
+        return phoneNumber;
+      }
+    }
+  </script>
 
-            var printWindow = window.open('', '_blank');
-            printWindow.document.write('<html><head><title>Printable Content</title><style>');
-            printWindow.document.write('body { font-family: "Arial Narrow", "Arial", sans-serif; margin: 0; padding: 0; }');
-            printWindow.document.write('@media print { body { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: "Arial Narrow", "Arial", sans-serif; } }');
-            printWindow.document.write('.content-container { text-align: center; font-size: 28px; margin: 0 auto; max-width: 600px; }');
-            printWindow.document.write('.content-container p { margin: 0; }');
-            printWindow.document.write('.content-container .category { margin: 10px 0; }');
-            printWindow.document.write('.notes { font-size: 12pt; }');
-            printWindow.document.write('.contact { font-size: 20px; }');
-            printWindow.document.write('</style></head><body>');
-            printWindow.document.write('<div class="content-container">');
-            printWindow.document.write('<p class="category"><strong>' + nameContent + '</strong></p>');
-            printWindow.document.write('<div class="category"><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
-            printWindow.document.write('<p class="category contact">' + contactContent + '</p>');
-            printWindow.document.write('<p class="category notes"><em>' + notesContent + '</em></p>');
-            printWindow.document.write('</div>');
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-
-            printWindow.onload = function() {
-                printWindow.print();
-            };
-        }
-
-        function capitalizeFirstLetterAfterPeriod(str) {
-            return str.replace(/\. ([a-z])/g, function(match, group1) {
-                return '. ' + group1.toUpperCase();
-            }).replace(/^[a-z]/, function(match) {
-                return match.toUpperCase();
-            });
-        }
-
-        function formatPhoneNumber(phoneNumber) {
-            phoneNumber = phoneNumber.replace(/^\+64/, '0');
-
-            var mobilePattern = /^(021|022|027|029)(\d{3}|\d{4})(\d{4}|\d{3})$/;
-            var landlinePattern = /^(?!08)(0[3-9])(\d{3}|\d{4})(\d{4}|\d{3})$/;
-            var tollFreePattern = /^(0800)(\d{3}|\d{4})(\d{4}|\d{3})$/;
-
-            if (mobilePattern.test(phoneNumber)) {
-                return phoneNumber.replace(/^(021|022|027|029)(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
-            } else if (landlinePattern.test(phoneNumber)) {
-                return phoneNumber.replace(/^(?!08)(0[3-9])(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
-            } else if (tollFreePattern.test(phoneNumber)) {
-                return phoneNumber.replace(/^(0800)(\d{3}|\d{4})(\d{4}|\d{3})$/, '$1 $2 $3');
-            } else {
-                return phoneNumber;
-            }
-        }
-    </script>
 </body>
 </html>
