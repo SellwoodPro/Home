@@ -253,12 +253,15 @@ function printContent() {
   printWindow.document.write('.notes { font-size: 12pt; }');
   printWindow.document.write('.contact { font-size: 20px; }');
   printWindow.document.write('.label { page-break-after: always; }'); // Ensure page breaks between labels
+  printWindow.document.write('.line { border-top: 1px solid black; width: 90%; margin: 0 auto; }'); // Define the line style
   printWindow.document.write('</style></head><body>');
 
   for (let i = 1; i <= itemsValue; i++) {
     printWindow.document.write('<div class="content-container label">');
     printWindow.document.write('<p class="category"><strong>' + nameContent + '</strong></p>');
+    printWindow.document.write('<div class="line"></div>'); // Add the line between name and address
     printWindow.document.write('<div class="category"><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
+printWindow.document.write('<div class="line"></div>');
     printWindow.document.write('<p class="category contact">' + phoneContent + '</p>');
     printWindow.document.write('<p class="category notes"><em>' + notesContent + '</em></p>');
     if (itemsValue > 1) {
