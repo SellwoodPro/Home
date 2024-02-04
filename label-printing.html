@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search and Populate Form</title>
-  <style>
+    <style>
     /* Modern CSS styles */
     body {
       font-family: Arial, sans-serif;
@@ -105,6 +105,49 @@
     #infoForm button:hover {
       background-color: #9a1f16;
     }
+#infoForm select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    color: #333;
+    background-image: none; /* Remove background image */
+    -webkit-appearance: none; /* Remove default appearance */
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 10px; /* Adjust padding */
+}
+
+  #infoForm select option {
+    background-color: #fff; /* Add background color */
+    color: #333; /* Add text color */
+  }
+@media print {
+  body { 
+    font-family: "Arial Narrow", "Arial", sans-serif; 
+    margin: 0; 
+    padding: 0; 
+  }
+  
+  .content-container { 
+    text-align: center; 
+    font-size: 16px; /* Adjust font size for printing */
+    margin: 0 auto; 
+    max-width: 800px; /* Adjust max width for printing */
+    padding: 10px; /* Add some padding for better readability */
+  }
+
+  /* Add page break after each label */
+  .label { 
+    page-break-after: always; 
+  }
+}
   </style>
 </head>
 <body>
@@ -115,9 +158,17 @@
 
     <form id="infoForm">
       <input type="text" id="name" placeholder="Name">
-      <textarea id="address" placeholder="Street&#10;Suburb&#10;City" rows="4"></textarea>
+      <textarea id="address" placeholder="Street&#10;Suburb&#10;City" rows="3"></textarea>
       <input type="text" id="phone" placeholder="Phone">
       <input type="text" id="notes" placeholder="Notes">
+      <!-- Add dropdown menu -->
+      <select id="items">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
       <!-- Add print button -->
       <button type="button" onclick="printContent()">Print</button>
     </form>
@@ -205,35 +256,52 @@
       document.getElementById('notes').value = result[5] || '';
     }
 
-    function printContent() {
-      var nameContent = document.getElementById("name").value.toUpperCase();
-      var addressContent = document.getElementById("address").value.toUpperCase();
-      var phoneContent = formatPhoneNumber(document.getElementById("phone").value.toUpperCase().replace(/[ -]/g, ''));
-      var notesContent = document.getElementById("notes").value; // Do not change the case
+function printContent() {
+  var nameContent = document.getElementById("name").value.toUpperCase();
+  var addressContent = document.getElementById("address").value.toUpperCase();
+  var phoneContent = formatPhoneNumber(document.getElementById("phone").value.toUpperCase().replace(/[ -]/g, ''));
+  var notesContent = document.getElementById("notes").value; // Do not change the case
+  var itemsValue = parseInt(document.getElementById("items").value);
 
-      var printWindow = window.open('', '_blank');
-      printWindow.document.write('<html><head><title>Printable Content</title><style>');
-      printWindow.document.write('body { font-family: "Arial Narrow", "Arial", sans-serif; margin: 0; padding: 0; }');
-      printWindow.document.write('@media print { body { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: "Arial Narrow", "Arial", sans-serif; } }');
-      printWindow.document.write('.content-container { text-align: center; font-size: 28px; margin: 0 auto; max-width: 600px; }');
-      printWindow.document.write('.content-container p { margin: 0; }');
-      printWindow.document.write('.content-container .category { margin: 10px 0; }');
-      printWindow.document.write('.notes { font-size: 12pt; }');
-      printWindow.document.write('.contact { font-size: 20px; }');
-      printWindow.document.write('</style></head><body>');
-      printWindow.document.write('<div class="content-container">');
-      printWindow.document.write('<p class="category"><strong>' + nameContent + '</strong></p>');
-      printWindow.document.write('<div class="category"><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
-      printWindow.document.write('<p class="category contact">' + phoneContent + '</p>');
-      printWindow.document.write('<p class="category notes"><em>' + notesContent + '</em></p>');
-      printWindow.document.write('</div>');
-      printWindow.document.write('</body></html>');
-      printWindow.document.close();
+  var printWindow = window.open('', '_blank');
+  printWindow.document.write('<html><head><title>Printable Content</title><style>');
+  printWindow.document.write('body { font-family: "Arial Narrow", "Arial", sans-serif; margin: 0; padding: 0; }');
+  printWindow.document.write('@media print { body { font-family: "Arial Narrow", "Arial", sans-serif; } }');
+  printWindow.document.write('.content-container { text-align: center; font-size: 28px; margin: 0 auto; max-width: 600px; position: relative; top: 50%; transform: translateY(-50%); }');
+  printWindow.document.write('.content-container p { margin: 0; }');
+  printWindow.document.write('.content-container .category { margin-bottom: 5px; padding: 0; }'); // Adjusted to add 5px gap between categories
+  printWindow.document.write('.notes { font-size: 12pt; }');
+  printWindow.document.write('.contact { font-size: 20px; }');
+  printWindow.document.write('.label { page-break-after: always; }'); // Ensure page breaks between labels
+  printWindow.document.write('@page { margin: 0; }'); // Reset page margins
+  printWindow.document.write('@media print { .content-container { position: static; transform: none; top: auto; margin-top: 30px; } }'); // Reset position for printing
 
-      printWindow.onload = function () {
-        printWindow.print();
-      };
+  // If itemsValue is 1, content is printed in the middle of the page, else content starts from the top on every page
+  if (itemsValue === 1) {
+    printWindow.document.write('@media print { .content-container { margin-top: 50vh; transform: translateY(-50%); } }');
+  }
+
+  printWindow.document.write('</style></head><body>');
+
+  for (let i = 1; i <= itemsValue; i++) {
+    printWindow.document.write('<div class="content-container label">');
+    printWindow.document.write('<p class="category"><strong>' + nameContent + '</strong></p>');
+    printWindow.document.write('<div class="category"><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
+    printWindow.document.write('<p class="category contact">' + phoneContent + '</p>');
+    printWindow.document.write('<p class="category notes"><em>' + notesContent + '</em></p>');
+    if (itemsValue > 1) {
+      printWindow.document.write('<p class="category" style="font-size: 12pt; font-style: italic;">' + i + ' of ' + itemsValue + '</p>');
     }
+    printWindow.document.write('</div>');
+  }
+
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+
+  printWindow.onload = function () {
+    printWindow.print();
+  };
+}
 
     function formatPhoneNumber(phoneNumber) {
       phoneNumber = phoneNumber.replace(/^\+64/, '0');
@@ -253,7 +321,5 @@
       }
     }
   </script>
-
-
 </body>
 </html>
