@@ -128,26 +128,6 @@
     background-color: #fff; /* Add background color */
     color: #333; /* Add text color */
   }
-@media print {
-  body { 
-    font-family: "Arial Narrow", "Arial", sans-serif; 
-    margin: 0; 
-    padding: 0; 
-  }
-  
-  .content-container { 
-    text-align: center; 
-    font-size: 16px; /* Adjust font size for printing */
-    margin: 0 auto; 
-    max-width: 800px; /* Adjust max width for printing */
-    padding: 10px; /* Add some padding for better readability */
-  }
-
-  /* Add page break after each label */
-  .label { 
-    page-break-after: always; 
-  }
-}
   </style>
 </head>
 <body>
@@ -256,52 +236,44 @@
       document.getElementById('notes').value = result[5] || '';
     }
 
-function printContent() {
-  var nameContent = document.getElementById("name").value.toUpperCase();
-  var addressContent = document.getElementById("address").value.toUpperCase();
-  var phoneContent = formatPhoneNumber(document.getElementById("phone").value.toUpperCase().replace(/[ -]/g, ''));
-  var notesContent = document.getElementById("notes").value; // Do not change the case
-  var itemsValue = parseInt(document.getElementById("items").value);
+    function printContent() {
+      var nameContent = document.getElementById("name").value.toUpperCase();
+      var addressContent = document.getElementById("address").value.toUpperCase();
+      var phoneContent = formatPhoneNumber(document.getElementById("phone").value.toUpperCase().replace(/[ -]/g, ''));
+      var notesContent = document.getElementById("notes").value; // Do not change the case
+      var itemsValue = parseInt(document.getElementById("items").value);
 
-  var printWindow = window.open('', '_blank');
-  printWindow.document.write('<html><head><title>Printable Content</title><style>');
-  printWindow.document.write('body { font-family: "Arial Narrow", "Arial", sans-serif; margin: 0; padding: 0; }');
-  printWindow.document.write('@media print { body { font-family: "Arial Narrow", "Arial", sans-serif; } }');
-  printWindow.document.write('.content-container { text-align: center; font-size: 28px; margin: 0 auto; max-width: 600px; position: relative; top: 50%; transform: translateY(-50%); }');
-  printWindow.document.write('.content-container p { margin: 0; }');
-  printWindow.document.write('.content-container .category { margin-bottom: 5px; padding: 0; }'); // Adjusted to add 5px gap between categories
-  printWindow.document.write('.notes { font-size: 12pt; }');
-  printWindow.document.write('.contact { font-size: 20px; }');
-  printWindow.document.write('.label { page-break-after: always; }'); // Ensure page breaks between labels
-  printWindow.document.write('@page { margin: 0; }'); // Reset page margins
-  printWindow.document.write('@media print { .content-container { position: static; transform: none; top: auto; margin-top: 30px; } }'); // Reset position for printing
+      var printWindow = window.open('', '_blank');
+      printWindow.document.write('<html><head><title>Printable Content</title><style>');
+      printWindow.document.write('body { font-family: "Arial Narrow", "Arial", sans-serif; margin: 0; padding: 0; }');
+      printWindow.document.write('@media print { body { font-family: "Arial Narrow", "Arial", sans-serif; } }');
+      printWindow.document.write('.content-container { text-align: center; font-size: 28px; margin: 0 auto; max-width: 600px; }');
+      printWindow.document.write('.content-container p { margin: 0; }');
+      printWindow.document.write('.content-container .category { margin: 10px 0; }');
+      printWindow.document.write('.notes { font-size: 12pt; }');
+      printWindow.document.write('.contact { font-size: 20px; }');
+      printWindow.document.write('.label { page-break-after: always; }'); // Ensure page breaks between labels
+      printWindow.document.write('</style></head><body>');
 
-  // If itemsValue is 1, content is printed in the middle of the page, else content starts from the top on every page
-  if (itemsValue === 1) {
-    printWindow.document.write('@media print { .content-container { margin-top: 50vh; transform: translateY(-50%); } }');
+      for (let i = 1; i <= itemsValue; i++) {
+        printWindow.document.write('<div class="content-container label">');
+        printWindow.document.write('<p class="category"><strong>' + nameContent + '</strong></p>');
+        printWindow.document.write('<div class="category"><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
+        printWindow.document.write('<p class="category contact">' + phoneContent + '</p>');
+        printWindow.document.write('<p class="category notes"><em>' + notesContent + '</em></p>');
+  if (itemsValue > 1) {
+    printWindow.document.write('<p class="category" style="font-size: 12pt; font-style: italic;">' + i + ' of ' + itemsValue + '</p>');
   }
+        printWindow.document.write('</div>');
+      }
 
-  printWindow.document.write('</style></head><body>');
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
 
-  for (let i = 1; i <= itemsValue; i++) {
-    printWindow.document.write('<div class="content-container label">');
-    printWindow.document.write('<p class="category"><strong>' + nameContent + '</strong></p>');
-    printWindow.document.write('<div class="category"><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
-    printWindow.document.write('<p class="category contact">' + phoneContent + '</p>');
-    printWindow.document.write('<p class="category notes"><em>' + notesContent + '</em></p>');
-    if (itemsValue > 1) {
-      printWindow.document.write('<p class="category" style="font-size: 12pt; font-style: italic;">' + i + ' of ' + itemsValue + '</p>');
+      printWindow.onload = function () {
+        printWindow.print();
+      };
     }
-    printWindow.document.write('</div>');
-  }
-
-  printWindow.document.write('</body></html>');
-  printWindow.document.close();
-
-  printWindow.onload = function () {
-    printWindow.print();
-  };
-}
 
     function formatPhoneNumber(phoneNumber) {
       phoneNumber = phoneNumber.replace(/^\+64/, '0');
