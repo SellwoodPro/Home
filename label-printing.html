@@ -150,10 +150,6 @@
       <button type="button" onclick="printContent()">Print</button>
     </form>
   </div>
-</body>
-</html>
-
-
 
   <script>
     // Your existing JavaScript code here
@@ -203,6 +199,14 @@
                 event.preventDefault();
                 const nextIndex = (index + 1) % searchResults.length;
                 searchResultsContainer.querySelectorAll('a')[nextIndex].focus();
+              } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                const prevIndex = (index - 1 + searchResults.length) % searchResults.length;
+                searchResultsContainer.querySelectorAll('a')[prevIndex].focus();
+              } else if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                const nextIndex = (index + 1) % searchResults.length;
+                searchResultsContainer.querySelectorAll('a')[nextIndex].focus();
               }
             });
 
@@ -237,47 +241,47 @@
       document.getElementById('notes').value = result[5] || '';
     }
 
-function printContent() {
-  var nameContent = document.getElementById("name").value.toUpperCase();
-  var addressContent = document.getElementById("address").value.toUpperCase();
-  var phoneContent = formatPhoneNumber(document.getElementById("phone").value.toUpperCase().replace(/[ -]/g, ''));
-  var notesContent = document.getElementById("notes").value; // Do not change the case
-  var itemsValue = parseInt(document.getElementById("items").value);
+    function printContent() {
+      var nameContent = document.getElementById("name").value.toUpperCase();
+      var addressContent = document.getElementById("address").value.toUpperCase();
+      var phoneContent = formatPhoneNumber(document.getElementById("phone").value.toUpperCase().replace(/[ -]/g, ''));
+      var notesContent = document.getElementById("notes").value; // Do not change the case
+      var itemsValue = parseInt(document.getElementById("items").value);
 
-  var printWindow = window.open('', '_blank');
-  printWindow.document.write('<html><head><title>Printable Content</title><style>');
-  printWindow.document.write('body { font-family: "Arial Narrow", "Arial", sans-serif; margin: 0; padding: 0; }');
-  printWindow.document.write('@media print { body { font-family: "Arial Narrow", "Arial", sans-serif; } }');
-  printWindow.document.write('.content-container { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 28px; margin: 0 auto; max-width: 600px; height: 100vh; }');
-  printWindow.document.write('.content-container p { margin: 0; }');
-  printWindow.document.write('.content-container .category { margin: 5px 0; }'); // Reduced space between fields to 5px
-  printWindow.document.write('.notes { font-size: 12pt; }');
-  printWindow.document.write('.contact { font-size: 20px; }');
-  printWindow.document.write('.label { page-break-after: always; }'); // Ensure page breaks between labels
-  printWindow.document.write('.line { border-top: 1px solid black; width: 90%; margin: 0 auto; }'); // Define the line style
-  printWindow.document.write('</style></head><body>');
+      var printWindow = window.open('', '_blank');
+      printWindow.document.write('<html><head><title>Printable Content</title><style>');
+      printWindow.document.write('body { font-family: "Arial Narrow", "Arial", sans-serif; margin: 0; padding: 0; }');
+      printWindow.document.write('@media print { body { font-family: "Arial Narrow", "Arial", sans-serif; } }');
+      printWindow.document.write('.content-container { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-size: 28px; margin: 0 auto; max-width: 600px; height: 100vh; }');
+      printWindow.document.write('.content-container p { margin: 0; }');
+      printWindow.document.write('.content-container .category { margin: 5px 0; }'); // Reduced space between fields to 5px
+      printWindow.document.write('.notes { font-size: 12pt; }');
+      printWindow.document.write('.contact { font-size: 20px; }');
+      printWindow.document.write('.label { page-break-after: always; }'); // Ensure page breaks between labels
+      printWindow.document.write('.line { border-top: 1px solid black; width: 90%; margin: 0 auto; }'); // Define the line style
+      printWindow.document.write('</style></head><body>');
 
-  for (let i = 1; i <= itemsValue; i++) {
-    printWindow.document.write('<div class="content-container label">');
-    printWindow.document.write('<p class="category"><strong>' + nameContent + '</strong></p>');
-    printWindow.document.write('<div class="line"></div>'); // Add the line between name and address
-    printWindow.document.write('<div class="category"><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
-printWindow.document.write('<div class="line"></div>');
-    printWindow.document.write('<p class="category contact">' + phoneContent + '</p>');
-    printWindow.document.write('<p class="category notes"><em>' + notesContent + '</em></p>');
-    if (itemsValue > 1) {
-      printWindow.document.write('<p class="category" style="font-size: 12pt; font-style: italic;">' + i + ' of ' + itemsValue + '</p>');
+      for (let i = 1; i <= itemsValue; i++) {
+        printWindow.document.write('<div class="content-container label">');
+        printWindow.document.write('<p class="category"><strong>' + nameContent + '</strong></p>');
+        printWindow.document.write('<div class="line"></div>'); // Add the line between name and address
+        printWindow.document.write('<div class="category"><strong>' + addressContent.replace(/\n/g, '<br>') + '</strong></div>');
+        printWindow.document.write('<div class="line"></div>');
+        printWindow.document.write('<p class="category contact">' + phoneContent + '</p>');
+        printWindow.document.write('<p class="category notes"><em>' + notesContent + '</em></p>');
+        if (itemsValue > 1) {
+          printWindow.document.write('<p class="category" style="font-size: 12pt; font-style: italic;">' + i + ' of ' + itemsValue + '</p>');
+        }
+        printWindow.document.write('</div>');
+      }
+
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+
+      printWindow.onload = function () {
+        printWindow.print();
+      };
     }
-    printWindow.document.write('</div>');
-  }
-
-  printWindow.document.write('</body></html>');
-  printWindow.document.close();
-
-  printWindow.onload = function () {
-    printWindow.print();
-  };
-}
 
 
     function formatPhoneNumber(phoneNumber) {
